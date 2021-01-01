@@ -10,3 +10,4 @@ Diese Software ist sowohl auf dem Klassischen Tonuino bestehend aus Einzelkmpoen
 wie Arduino-Nano, DF-Player mini, RFID Reader MRF522 lauffähig,
 als auch auf der neuen AiO Platine.
 
+Für diese Version die in der zip datei enthaltenen Ordner advert und mp3 verwenden.
