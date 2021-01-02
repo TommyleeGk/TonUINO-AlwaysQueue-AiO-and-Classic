@@ -11,3 +11,6 @@ wie Arduino-Nano, DF-Player mini, RFID Reader MRF522 lauffähig,
 als auch auf der neuen AiO Platine.
 
 Für diese Version die in der zip datei enthaltenen Ordner advert und mp3 verwenden.
+Das ZipFile enthält den Code in verschiedenen Vorkonfigurationen über die Defines.
+Der Code ist in allen Versionen dentisch und nur über die Definesan verschiedene 
+Hardwarekombinationen angepasst.
