@@ -14,7 +14,7 @@
 
       Version Thomas Lehnert
 
-      letzte Änderung 2021-04-28
+      letzte Änderung 2021-08-09
    
 
     - Über #define wird ausgewählt, ob die Software auf dem AiO - Board,
