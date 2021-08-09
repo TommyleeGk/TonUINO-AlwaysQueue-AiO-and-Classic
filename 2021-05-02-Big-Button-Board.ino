@@ -2032,8 +2032,9 @@ void checkStandbyAtMillis()                                         // Standbyti
 // ************* Ausschalten **************************
 void ShutDown()                                                     // Ausschalten
 {
-  SpkOff();                                                         // Stummschalten
-
+#ifdef SpkOnOff
+   SpkOff();                                                         // Stummschalten
+#endif
   Serial.println(F("Power OFF!"));
 
 #ifdef USB-Stick
