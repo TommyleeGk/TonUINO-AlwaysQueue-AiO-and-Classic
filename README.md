@@ -14,3 +14,7 @@ Für diese Version die in der zip datei enthaltenen Ordner advert und mp3 verwen
 Das ZipFile enthält den Code in verschiedenen Vorkonfigurationen über die Defines.
 Der Code ist in allen Versionen dentisch und nur über die Definesan verschiedene 
 Hardwarekombinationen angepasst.
+
+Der in den zip files enthaltene Code beinhaltet noch nicht das letzte Update vom 07-11.2021.
+Dafür bitte die .ino Datei direkt herunterladen und über die defines für die eigene Hardware konfigurieren.
+Die Alway Queue und die BigButtonboard Versionen sind vom Code identisch, nur unterschiedlich konfiguriert.
