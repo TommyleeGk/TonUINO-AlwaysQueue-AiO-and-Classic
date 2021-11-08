@@ -14,13 +14,13 @@
 
       Version Thomas Lehnert
 
-      letzte Änderung 2021-08-09
+      letzte Änderung 2021-11-07
    
 
     - Über #define wird ausgewählt, ob die Software auf dem AiO - Board,
       oder auf dem TonUINO Classic  aus Einzelkomponenten mit dem Arduino Nano
       benutzt werden soll.
-
+    ========================== AiO ========================================================================
     - Für die AiO Platine müssen folgende Einstellungen vorgenommen werden.
       Die LGT8Fx Bibliotheken müssen in der IDE installiert sein !
       Siehe folgender Link: https://www.leiterkartenpiraten.de/2020/11/21/die-arduino-ide-einrichten/
@@ -36,130 +36,150 @@
       Um den korrekten COM Port auswählen zu können, muss die AiO angeschlossen sein. 
       Der COM Port kann sich unterscheiden (siehe Gerätemanager).
 
+   ======================= TonUINO - Klassik ================================================================
    - Für die Nutzung in der Version Classic mit Einzelkomponenten, 
      Nano 328P oder Nano 328P(Old Bootlader) je nach Version auswählen.
 
-
+   ===========================================================================================================
      !!!!!!! WICHTIG !!!!!!!!!!! WICHTIG !!!!!!!!!!! WICHTIG !!!!!!!!!!! WICHTIG !!!!!!!!! WICHTIG !!!!!!!!!!!
      !!                                                                                                     !!
-     !!   Die Änderungen erfordern eine Neuordnung und das Hinzufügen von Dateien im advert und mp3 Ordner. !!
+     !!   Diese Version  erfordert geänderte und erweiterte Dateien im advert und mp3 Ordner.               !!
      !!   Für die korrekte Funktion müssen die dieser Version beigefügten mp3 und advert Ordner verwendet   !!
      !!   werden.                                                                                           !!
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+  ============================================================================================================
    Eine Übersicht aller vorgenommenen Änderungen und Erweiterungen befindet sich am Ende des Scetches.
-  ***********************************************************************************************************
+  ============================================================================================================
   ***********************************************************************************************************/
 
 // ============================================================================================================
 // *************** Auswahl der Tonuino-Variante ** AiO oder TonUINO Classic *********************
 // uncomment or comment the " #define AiO "  to switch enter the AiO Softwareversion or TonUINO Classic
 
-// --------------------- All in One Board ----------------------------------------------------------
-#define AiO                     // Software wird an das AiO Board angepasst
+// ---------------------- All in One Board ----------------------------------------------------------------------
+ #define AiO                    // Software wird an das AiO Board angepasst
                                 // Für den TonUINO Classic " #define AiO " in Kommentar setzen
-// _________________________________________________________________________________________________
 
-// ***************** Auswahl der Optionen und Zusatzfunktionen ************************************************
+// --------------------- Jackdetekt Kopfhörer - AiO ---- nur mit Hardwareänderung --------------------------------
+ #ifdef AiO                     // Bei gestecktem Kopfhörer wird das Jackdetekt-Signal ausgewertet 
+                                // und der Verstärker nur über die Software stummgeschaltet. Die direkte Stummschaltung
+                                // des Verstärkers über die Kopfhörerbuchse ist nicht mehr aktiv.
+                                // (über Jumper kann die Originalfunktion wieder aktiviert werden)
+  // #define Jackdetekt           // Nur aktivieren wenn Hardwareänderung für Jackdetekt auf der AiO Platine durchgeführt wurde.
+ #endif                         // Ohne HW-Änderung in Kommentar setzen !!!
+
+// __________________________________________________________________________________________________________________
+
+// ******************** Auswahl der Optionen und Zusatzfunktionen ***************************************************
 
 // uncomment or comment the " #define .... "  to enable or disable the additional function
 
 // --------------------- Debug Modus --- AiO und Classic ------------------------------------------------------------
-#define Konsole               // Zum Einsparen von Programmspeicher wird die Ausgabe
+//#define Konsole               // Zum Einsparen von Programmspeicher wird die Ausgabe
                               // auf den Seriellen Monitor nur bei Freigabe ausgeführt.
                               // Bei aktiver LED-Animation, wird diese deaktiviert, um den Programmspeicher
                               // für die Konsolenausgabe frei zu machen.
   
-// -------------------- 5 Tasten Support --- AiO und Classic ----------------------------------------------------------
-#define FIVEBUTTONS           // 5 Tasten support
+// -------------------- 5 Tasten Support --- AiO und Classic --------------------------------------------------------
+//#define FIVEBUTTONS           // 5 Tasten support
                               // In diesem Modus kann die Batterieüberwachung im TonUINO Classic nicht verwendet werden
                               // wenn A4 von dieser verwendet wird, oder der PrüfPin muss umdeklariert werden.
-
-// -------------------- Support des Buttonboards mit 3 Standarttasten und 9 Zusatztasten für Shortcuts --- AiO und Classic 
+                              // Wird das 12-Buttonboard aktiviert, wird der 5 Tastenmodus automatisch deaktiviert.
+                              
+// -------------------- Support des 12 Buttonboards mit 3 Standarttasten und 9 Zusatztasten für Shortcuts --- AiO und Classic 
 #define Buttonboard           // Unterstützung des Buttonboards mit 12 Tasten. 
   #ifdef Buttonboard          // Über das 9 Tastenfeld sind 9 weitere Shortcuts möglich.
    #ifdef FIVEBUTTONS         // Da das Buttonboard nur 3 Standarttasten unterstützt ist der 5 Tasten support nicht möglich
     #undef FIVEBUTTONS        // und wird ggf. deaktiviert.
   #endif                      // Hardwarekonfiguration auf dem Buttonboard über die DIP-Schalter beachten !
  #endif                       
+
+// --- NEU ------------ Sprungweite für Titelsprung Vorwärts/ Rückwärts bei LongPress Vor/Zurück --- AiO und Classic -----
+#define JumpLongPress         // Titelsprung bei Longpress Vorw. Rückw. Taste bei der 5 ButtonVersion
+     #ifdef FIVEBUTTONS       // Nur im 5 Buttonmodus
+  const uint8_t SetJump = 10; // Hier festlegen, um wieviele Tracks bei Longpress weiter oder zurück gesprungen wird.
+     #endif                   // Empfohlen 5 bis 10 Tracks.
+  #ifndef JumpLongPress
+  const uint8_t SetJump = 1;  // Wenn JumpLongPress nicht aktiviert ist, wird Sprungweite auf 1 gesetzt.
+  #endif      
 // -------------------- Zuletzt gespielte Karte als Shortcut speichern --- AiO und Classic -------------------------------
 #define LastCard              // Die zuletzt gespielte Karte wird als Shortcut auf die Play/Pause-Taste gelegt 
                               // Shortcuts, Startsound und Weckersound werden dabei nicht berücksichtigt
                               // Die Konfiguration des Shortcuts für die Play/Pause-Taste wird im Adminmenü nicht aufgerufen.
 
 // ---------------------- Hörbuch auf Anfang zurücksetzen --- AiO und Classic ---------------------------------------------
-#define HB_Reset              // Im Abspielmodus Hörbuch wird durch langen Druck der Pausetaste bei laufender Wiedergabe, 
-                              // der Fortschritt des Hörbuches auf Anfang zurückgesetzt
+#define HB_Reset              // Im Abspielmodus Hörbuch wird bei laufender Wiedergabe, der Fortschritt des Hörbuches
+                              // durch langen Druck der Pausetaste auf Anfang zurückgesetzt
 
 // ---------------------- Lautstärke für das Adminmenü festlegen --- AiO und Classic --------------------------------------
 #define MenueVol                // Die Menülautstärke wird auf die Startlautstärke Lautsprecher eingestellt.
 const uint8_t MenueVolume = 20; // Bei Deaktivierung von MenueVol wird die Menülautstärke auf diesen Festwert eingestellt.
 
-// ------------------- Zählen der Ordner auf der SD-Karte --- AiO und Classic ---------------------------------------------
+// ---------------------- Zählen der Ordner auf der SD-Karte --- AiO und Classic ------------------------------------------
 #define CountFolders           // Die Anzahl der Ordner des Speichermediums im DfPlayer wird ermittelt
-                               // und als Begrenzung bei der Ordnerauswahl verwendet.
+                               // und als Begrenzung bei der Ordnerauswahl im Adminmenü verwendet.
                                // Abhängig vom Chipsatz des DfPlayers ist die Funktion nicht immer verfügbar.
                                // Dann deaktivieren ! Es werden dann wieder die Funktionen ohne CountFolders verwendet.
-                               // Getestet mit MH-ETLive, IL AA19 und YX5200 24SS - und funktioniert.
+                               // Getestet mit MH-ETLive, IL AA19 und YX5200 24SS - funktioniert.
                                // AiO Platine funktioniert auch.
 
-// -------------------- Windows SystemVolumeInfo ignorieren --- AiO und Classic -------------------------------------------
-#ifdef CountFolders            // Bei CountFolders stört der Windows SystemVolumeInfo Ordner die exakte Funktion.
- #define IgnoreWinSysInf       // Der Windows-Ordner "Windows SystemVolumeInformation" kann auf der SD-Karte
+// ---------------------- Windows SystemVolumeInfo ignorieren --- AiO und Classic -----------------------------------------
+#ifdef CountFolders            // Der von Windows automatisch angelegte Ordner, System Volume Info -Ordner 
+                               // stört die exakte Funktion von CountFolders.
+ #define IgnoreWinSysInf       // Der Windows-Ordner "System Volume Information" kann auf der SD-Karte
                                // verbleiben und wird ignoriert. Dies ist bei Nutzung der Option CountFolders
                                // wichtig, um die korrekte Ordner Anzahl für die davon abhängigen Funktionen
                                // zu verwenden.
                                // Hinweis !!!!
-                               // Ist CountFolders aktiviert und die Datei Windows SystemvolumeInfo NICHT ! auf der SD-Karte
+                               // Ist CountFolders aktiviert und der Ordner Windows SystemvolumeInfo NICHT ! auf der SD-Karte
                                // vorhanden, ist beim Konfigurieren der Karten und Shortcuts der höchste belegte Ordner der 
                                // Mediadateien nicht auswählbar.
 #endif
-// -------------------- Abschaltung über Hardware --- AiO und Classic ------------------------------------------------------
+// ---------------------- Abschaltung über Hardware - Pololu-Switch,MosFet, u.s.w. -- AiO und Classic ----------------------
 #define HW_PowerOff            // Abschaltung über Hardware, wie Mosfet oder Pololu-Switch
                                // Der Ausschaltimpuls wird als Mehrfachimpuls LOW - HIGH - LOW ausgegeben.
                                // Dadurch werden beide Möglichkeiten HIGH Aktiv und LOW Aktiv bedient.
                                // Hardwareerweiterung für TonUINO Classc erforderlich. Mosfet oder Pololu-Switch
                                // Auf der AiO Platine ist die erforderliche Hardware bereits vorhanden
-  #ifdef HW_PowerOff
-    #define LowActive          // Das Ausschaltsignal muss LOW Pegel zum Ausschalten haben.
+  #ifdef HW_PowerOff           // Festlegen des Ausschalt-Signals, (HIGH oder LOW)
+    #define LowActive          // LOW Pegel schaltet den TonUINO aus.
                                // Für Pololu-Swich (HIGH aktiv) #define LowActive deaktivieren.
   #endif      
-// ------------------- Abschaltung durch die Powerbank bei Unterschreiten der Mindestlast -- I < 27 mA -- nur Classic ------
+// ---------------------- Abschaltung durch die Powerbank bei Unterschreiten der Mindestlast -- I < 27 mA -- nur Classic ----
+#ifndef AiO                    // Nur für den TonUINO Classic
 //#define LowCurrPwDown          // Die Stromaufnahme des Tonuino wird auf < 27 mA reduziert.
-   #ifdef AiO                  // Die Abschaltung erfolgt durch die Powerbank, bei Unterschreitung der Mindestlast
-    #ifdef LowCurrPwDown       // schaltet die Powerbank selbstständig automatisch aus.
-     #undef LowCurrPwDown      // Für die AiO wird LowCurrPwDown nicht benötigt und deaktiviert.
-    #endif
-   #endif  
-// -------------------- LED Animation mit NEOPixel LED Ring oder Strip --- AiO und Classic ----------------------------------
-  #define LED_SR               // LED Animation mit Neopixel LED-Ring oder Strip
-     #ifdef Konsole            // Hardwareerweiterung erforderlich: (Neopixel LED's,Strip oder Ring)
-       #ifdef LED_SR           // Sind die Konsolenausgabe und die LED Animation definiert, 
-        #undef LED_SR          // wird die LED Animation zum Freimachen von Pogrammspeicher deaktiviert.
-       #endif
-     #endif  
-     #ifdef LED_SR               // Bei definierter LED Animation
-  const uint8_t LED_COUNT = 22 ; // Anzahl an LEDs im Ring oder Strip. Kann hier angepasst werden.
+#endif                         // Die Abschaltung erfolgt durch die Powerbank. 
+                               // Bei Unterschreitung der Mindestlast schaltet die Powerbank selbstständig automatisch aus.
+                               // Die Powerbank muss das Abschalten bei Unterschreiten eines minimalen Laststromes unterstützen.
+                               // Für die AiO wird LowCurrPwDown nicht benötigt.
 
-      #define LED_SR_Switch    // Möglichkeit die LED-Animation über gleichzeitigen langen Druck 
+// ---------------------- LED Animation mit NEOPixel LED Ring oder Strip --- AiO und Classic --------------------------------
+ #ifndef Konsole               // Nur bei deaktivierter Konsole wird define LED_SR aktiv
+  #define LED_SR               // LED Animation mit Neopixel LED-Ring oder Strip
+ #endif                        // Hardwareerweiterung erforderlich: (Neopixel LED's,Strip oder Ring)
+
+ #ifdef LED_SR                 // Bei definierter LED Animation
+  const uint8_t LED_COUNT = 22 ; // Anzahl der LEDs im Ring oder Strip. Kann hier angepasst werden.
+  #define LED_SR_Switch        // Möglichkeit die LED-Animation über gleichzeitigen langen Druck 
                                // der Up-Down Tasten oder über Software ein- und auszuschalten
-    #endif 
-// -------------------- USB Stick als Speichermedium --- Nur TonUINO Classic --------------------------------------------------
-//#define USB-Stick            // An Stelle der SD-Karte arbeitet der DF-Player mit einem USB-Stick
-  #ifdef AiO                   // Hardwareerweiterung erforderlich: (USB - A Buchse am DF-Player angeschlossen)
-    #ifdef USB-Stick           // TonUINO reagiert deutlich träger je nach USB-Stick und df-Player !!!
-    #undef USB-Stick           // Bei Freischaltung auf AiO Board wird die Definition wieder deaktiviert !
-    #endif
-  #endif
-// -------------------- Lautsprecher Abschaltung über Software ---AiO auch über KH Buchse --------------------------------------
+ #endif 
+// ---------------------- USB Stick als Speichermedium --- Nur TonUINO Classic ----------------------------------------------
+#ifndef AiO
+//#define USB-Stick             // An Stelle der SD-Karte arbeitet der DF-Player mit einem USB-Stick
+                               // Hardwareerweiterung erforderlich: (USB - A Buchse am DF-Player angeschlossen)
+  #endif   
+// ---------------------- Lautsprecher Abschaltung über Software ---AiO auch über KH Buchse ----------------------------------
 #define SpkOnOff              // Aus und Einschalten des Lautsprechers über Software 
                               // zur Unterdrückung des Einschaltgeräusches und
                               // Möglichkeit der Abschaltung beim Anschluss eines Kopfhörers (AiO über KH-Buchse )
                               // Hardwareerweiterung für TonUINO Classic erforderlich: (Abschaltung des Lautsprechers über MOS-FET's)
                               // Bei der AiO wird der Verstärker ein bzw. ausgeschaltet.
 
-// -------------------- Kopfhörer --- Nur TonUINO Classic --- Für Nutzung mit der AiO ist eine Änderung auf der Platine nötig ---
-#ifndef AiO                   // Nur TonUINO classic (Anpassung an AiO nur über Hardwareänderung möglich)
+// ---------------------- Kopfhörer --- Nur TonUINO Classic --- Nutzung mit der AiO nach Hardwareänderung möglich ---
+#ifndef AiO 
+   #define Jackdetekt         // Jackdetekt Classic, bei Nutzung Kopfhörer-Buchse oder Platine mit Jackdetekt.
+ #endif                               
+#ifdef Jackdetekt             // für AiO #define Jackdetekt bei Auswahl AiO Platine aktivieren!(Siehe Oben, Einstellung Boardauswahl.)
 #define EarPhone              // Abschaltung des Lautsprechers über Software, wenn Kopfhörer angeschlossen sind
     #ifdef EarPhone           // Hardwareerweiterung erforderlich: (Kopfhöerbuchse mit Schaltkontakten, oder Kopfhöreranschlussplatine)
        #ifndef SpkOnOff       // wenn SpkOnOff nicht aktiviert ist, wird diese Funktion automatisch mit aktiviert
@@ -167,10 +187,10 @@ const uint8_t MenueVolume = 20; // Bei Deaktivierung von MenueVol wird die Menü
        #endif                 // Die Startlautstärken werden getrennt für Lautsprecher und Kopfhörer über das Adminmenü voreingestellt.
     #endif                    // Die jeweils letzten Laustärken werden getrennt bis zum Abschalten temporär gespeichert.
 #endif
-// ------------------- Festlegen des Sensorpegels für den Kophöreranschluss --- Nur TonUINO Classic -------------------------------
+// -------------------- Festlegen des Sensorpegels für den Kophöreranschluss --- Nur TonUINO Classic ------------------------------
 #ifndef AiO                   // Nur TonUINO Classic
 //#define KHSensLOW             // Der Sensorpegel für den Kopfhöreranschluss ist bei eingestecktem Kopfhörer LOW
-                              // Wenn der Sensorpegel bei eingestecktem Kopfhörer HIGH ist, #define deaktivieren
+                              // Wenn der Sensorpegel bei eingestecktem Kopfhörer HIGH ist, #define KHSensLOW deaktivieren
 #endif
 // ------------------- Weckerfunktion mit Weckermodul --- AiO und Classic ---------------------------------------------------------
 //#define Wecker              // Über ein externes Weckeruhrwerk wird eine Weckfunktion aktiviert
@@ -178,44 +198,47 @@ const uint8_t MenueVolume = 20; // Bei Deaktivierung von MenueVol wird die Menü
                             // Bei gestecktem Kopfhörer wird der Weckersound trotzdem über Lautsprecher abgespielt.
                             // Bei der AiO setzt das die Hardwareänderung Kopfhörer voraus.
 #ifdef Wecker               // Der Dialog zum Erstellen des Weckershortcuts wird im Adminmenü aktiviert.
- #ifndef SpkOnOff           // wenn SpkOnOff nicht aktiviert ist, wird diese Funktion automatisch aktiviert
+ #ifndef SpkOnOff           // Wenn SpkOnOff nicht aktiviert ist, wird diese Funktion automatisch aktiviert
    #define SpkOnOff         // Hardwareerweiterung für TonUINO Classic erforderlich: (Abschaltung des Lautsprechers über MOS-FET's)
   #endif                    // Für die AiO wird das Einschaltsignal über 10 kOhm auf PBN gelegt.(LOW-aktiv)
 #endif
 // ------------------- Lese-Empfindlichkeit des RFID-Lesers --- AiO und Classic ----------------------------------------------------
 // Bei Leseproblemen des RFID Lesers kann die Leseempfindlichkeit verändert werden.
-#define NFCgain_avg           // Mittlere Empfindlichkeit RFID Leser - Default wert
-//#define NFCgain_max           // Maximale Empfindlichkeit RFID Leser
-//#define NFCgain_min           // Minimale Empfindlichkeit RFID Leser
+#define NFCgain_avg         // Mittlere Empfindlichkeit RFID Leser - Default wert
+//#define NFCgain_max       // Maximale Empfindlichkeit RFID Leser
+//#define NFCgain_min       // Minimale Empfindlichkeit RFID Leser
 
 // ------------------- Überwachung der Batteriespannung --- TonUINO Classic und AiO ------------------------------------------------
-//#define BattControl           // Bei AiO muss die Lötbrücke SJ1 geschlossen werden und das modifizierte BSP LGT8FX
-                              // mit Unterstützung des AnalogPin A10 installiert werden.
-                              // AiO,- auf R17 einen 220 kOhm smd Widerstand huckepack auflöten, oder R17 durch einen 65 kOhm
-                              // smd Widerstand ersetzen.(Erweiterter Spannungsmessbereich bis 5 V)
-                              // Kann beim Classic nur im 3 Tasten-Modus verwendet werden, da AnalogPin A4 im 5 Tastenmodus belegt ist.
-                              // Wenn ein anderer Analogpin frei zur Nutzung ist, kann dieser für BattControl verwendet werden.
-                              // Vor den BattControlPin einen 100kOhm Widerstand in Reihe schalten (Classic).
-//            ___________________________________________________________________________________
+//#define BatteryCheck        // Bei AiO muss die Lötbrücke SJ1 geschlossen werden und das modifizierte BSP LGT8FX
+                            // mit Unterstützung des AnalogPin A10 installiert werden.(siehe obiger Link)
+                            // AiO,- auf R17 einen 220 kOhm smd Widerstand huckepack auflöten, oder R17 durch einen 65 kOhm
+                            // smd Widerstand ersetzen.(Erweiterter Spannungsmessbereich bis 5 V)
+                            // Kann beim Classic nur im 3 Tasten-Modus verwendet werden, da AnalogPin A4 im 5 Tastenmodus belegt ist.
+                            // Wenn ein anderer Analogpin frei zur Nutzung ist, kann dieser für BatteryCheck verwendet werden.
+                            // Vor den BatteryCheckPin einen 100kOhm Widerstand in Reihe schalten (Classic).
+// Wichtiger Hinweis !!!!!     Bei Anschluss der AiO über die USB-Buchse wird in der Konsole nicht die richtige Akkuspannung angezeigt.
+                            // Wenn diese über die Konsole korrekt angezeigt werden soll, (nicht im Ladebetrieb)
+                            // muss der PC über einen FTDI-Adapter (Jumper auf 3,3V) an rx/tx am Erweiterungsport der AiO Platine angeschlossen werden.
+//                           ___________________________________________________________________________________
   // Festlegung der Spannungswerte für die Batterieüberwachung. Kann hier angepasst werden.
 
- #ifdef BattControl           // Die Akkuspannung wird überwacht
+ #ifdef BatteryCheck          // Die Akkuspannung wird überwacht
                               // Hardwareerweiterung erforderlich (Batteriespannung muss bei ausgeschaltetem Tonuino
                               // vom Eingang des Arduino getrennt sein. (Nur TonUINO Classic,MosFet oder Relais)
-                              // bei Unterschreiten des BtSchw - Wertes wird eine Warnung ausgegeben
-                              // bei Erreichen des BtLeer - Wertes wird der Tonuino ausgeschaltet.
+                              // bei Unterschreiten des BatWarn - Wertes wird eine Warnung ausgegeben
+                              // bei Erreichen des BatEmpty - Wertes wird der Tonuino ausgeschaltet.
                               // Vor Abschalten erfolgt ein Ausfaden der Lautstärke über 20 Sekunden.
                               // Davon unabhängig schaltet die AiO bei Unterschreiten von 2,8 V über Hardware aus.
                               
   #ifndef AiO                 // TonUINO Classic , Werte gelten für Betrieb mit LiPo und LiIon Akku
-  const float BtSchw = 3.2 ;  // Spannungswert für Warnung
-  const float BtLeer = 3.0 ;  // Spannungswert für automatische Abschaltung über Software ShutDown.
+  const float BatWarn = 3.2 ; // Spannungswert für Warnung
+  const float BatEmpty = 3.0 ; // Spannungswert für automatische Abschaltung über Software ShutDown.
    #define Bandgap 1104000L   
   #endif                      
 
   #ifdef AiO                  // AiO, Werte gelten für Betrieb mit LiFePO4 Akku.
-  const float BtSchw = 2.95 ; // Spannungswert für Warnung
-  const float BtLeer = 2.90 ; // Spannungswert für automatische Abschaltung über Software ShutDown.
+  const float BatWarn = 2.95 ; // Spannungswert für Warnung
+  const float BatEmpty = 2.90 ; // Spannungswert für automatische Abschaltung über Software ShutDown.
   const float correction = 2.495 ; // Korrekturwert für Spannungsteiler (Anpassung der Anzeige an die tatsächliche Batteriespannung)
   #endif                      
  #endif
@@ -244,12 +267,13 @@ const uint8_t setVolChSp = 5 ;
 #include <Adafruit_NeoPixel.h>
 #endif
 
-#ifndef AiO                       // Definitionen für TonUINO Classic
+// ============================== Definitionen =============================================
+#ifndef AiO                       // für TonUINO Classic
 
 //******************* Definitionen der Pins für TonUINO Classic ****************************
 
 // ------------------ Analog-Pins -------------------------------
-// --------------- Ohne Buttonboard -----------------------------
+// --------------- 3 und 5 Button-Version -----------------------
 #ifndef Buttonboard                // 3 Tasten-Version
  #define ButtonPause A0            // Taste 1 - Play / Pause
  #define ButtonUp A1               // Taste 2 - Vor / Lauter
@@ -260,21 +284,21 @@ const uint8_t setVolChSp = 5 ;
  #define ButtonFivePin A4          // Taste 5 - Leiser / Zurück
  #endif
  #ifndef FIVEBUTTONS
- #ifdef BattControl                // Batterieüberwachung
- #define VControlPin A4            // Kontrollpin für Batterieüberwachung (Umdeklarierbar, wenn ein anderer Analogpin bei Nichtnutzung frei wird.)
+ #ifdef BatteryCheck               // Batterieüberwachung
+ #define BatteryCheckPin A4        // Kontrollpin für Batterieüberwachung (Umdeklarierbar, wenn ein anderer Analogpin bei Nichtnutzung frei wird.)
  #endif
  #endif                            
 #endif
 
-// --------------- Mit Buttonboard -----------------------------
+// --------------- Mit 12-Buttonboard -----------------------------
 #ifdef Buttonboard                 // 12 Tasten-Version mit Buttonboard
  #define Buttonmatrix A2           // Tastenmatrix 9 Tasten
  #define ButtonPause A0            // Taste 1 - Play / Pause
  #define ButtonUp A3               // Taste 2 - Vor / Lauter
  #define ButtonDown A4             // Taste 3 - Zurück / Leiser
  
- #ifdef BattControl                // Batteriekontrolle
- #define VControlPin A1            // Kontrollpin für Batterieüberwachung 
+ #ifdef BatteryCheck               // Batterieüberwachung
+ #define BatteryCheckPin A1        // Kontrollpin für Batterieüberwachung 
  #endif                            
 #endif
 // --------------------------------------------------------------
@@ -308,33 +332,33 @@ const uint8_t setVolChSp = 5 ;
 #define RstPin 9                  // MFRC 522 -RST
 #define SdaPin 10                 // MFRC 522 -SDA
 
-#endif                            // Ende Definitionen TonUINO Classic
+#endif                            // Ende Pin-Definitionen TonUINO Classic
 
-#ifdef AiO
+
 //******************* Definitionen der Pins für AiO ********************************
-
+#ifdef AiO
 //  Boardbeschreibung des AiO Boards Pin-Belegung und Zuordnung
 
 //  D5, A6 und A7 sind auf den extension port geschaltet.
 //  D6 ist zum button breakout board geschaltet (beschriftet mit WS(D6)).
 //  D9 (RST), D10 (SDA), D11 (MOSI), D12 (MISO) und D13 (SCK) sind zum nfc breakout board geschaltet.
-//  Die anderen Pins sind fest verdrahtet, siehe folgend: Die Funktion ergibt sich aus dem Status der Inversion
+//  Die anderen Pins sind fest verdrahtet, siehe folgend: Die Funktion ergibt sich aus dem Status der Inversion für die Tasten
 //   button0Pin = A0;                      // play/pause/power on
 //   button1Pin = A1;                      // prev (Zurück) oder vol- (Leiser)
 //   button2Pin = A2;                      // next (Vor) oder vol+ (Lauter)
 //   button3Pin = A3;                      // vol- (Leiser) oder prev (Zurück)
 //   button4Pin = A4;                      // vol+ (Lauter) oder next (Vor)
 //   onboardSdAccessControlPin = A5;       // Steuerpin für externen SD-Karten Zugriff (HIGH = enabled, LOW = disabled)
-//   checkBattVoltagePin = A10;            // Vorbereitet für Batteriespannungsüberwachung, Verbunden mit Lötbrücke SJ-1 und Spannungsteiler R15/R17 
-//   mp3SerialRxPin = 2;                   // mp3 serial rx, wired to tx pin of the mp3 chip
-//   mp3SerialTxPin = 3;                   // mp3 serial tx, wired to rx pin of the mp3 chip
+//   BatteryCheckPin = A10;                // Vorbereitet für Batteriespannungsüberwachung, Verbunden mit Lötbrücke SJ-1 und Spannungsteiler R15/R17 
+//   mp3SerialRxPin = 2;                   // mp3 serial rx, kommt vom tx pin des mp3 chip
+//   mp3SerialTxPin = 3;                   // mp3 serial tx, geht zum rx pin des mp3 chip
 //   busyPin = 4;                          // checkt den Wiedergabestatus des mp3 chips (HIGH = not playing, LOW = playing)
 //   powerControlPin = 7;                  // Steuerpin zur Ein und Ausschaltung des Systems (HIGH = power on, LOW = power off)
 //   onboardAmpControlPin = 8;             // Steuerpin zum Ein und Ausschalten des onboard NF-Verstärkers (HIGH = Verstärker AUS, LOW = Verstärker EIN)
 
 
-//---------------- Analog-Pins ----------------------------------
-//-------------- Ohne Buttonboard -------------------------------
+//---------------- Analog-Pins -------------------------------------
+//--------------  3 und 5 Tastenmodus ------------------------------
 #ifndef Buttonboard               // 3 Tastenkonfiguration
  #define ButtonPause A0           // Taste 1 - Play / Pause
  #define ButtonDown A1            // Taste 2 - Zurück / Leiser
@@ -345,7 +369,7 @@ const uint8_t setVolChSp = 5 ;
  #define ButtonFourPin A4         // Taste 4 - Leiser / Taste Zurück 5 Tastenmodus
  #endif
 #endif
-//-------------- Mit Buttonboard -------------------------------
+//-------------- Mit 12-Buttonboard --- 3 + 9 Tasten ----------------
 #ifdef Buttonboard                // Buttonboard Konfiguration
  #define Buttonmatrix A2          // Tastenmatrix 9 Tasten
  #define ButtonPause A0           // Taste 1 - Play / Pause
@@ -353,7 +377,7 @@ const uint8_t setVolChSp = 5 ;
  #define ButtonUp A4              // Taste 3 - Vor / Lauter
 #endif
 
-// -------------------------------------------------------------
+// -----------------------------------------------------------------
 #define Access_SD_Pin A5          // Pin zur Freigabe des SD-Kartenzugriffs über USB
                                   // control pin of the external sd card access (HIGH = enabled, LOW = disabled)
 #ifdef Wecker
@@ -362,12 +386,12 @@ const uint8_t setVolChSp = 5 ;
 
 #define RandomPin A7              // Floating Pin zur Gewinnung einer Zufallszahl (Extension Board)
 
-#ifdef BattControl                // Batterieüberwachung
- #define VControlPin A10          // Kontrollpin für Batterieüberwachung (über Lötbrücke SJ-1 auf AiO Platine verbinden)
+#ifdef BatteryCheck               // Batterieüberwachung
+ #define BatteryCheckPin A10      // Kontrollpin für Batterieüberwachung (über Lötbrücke SJ-1 auf AiO Platine verbinden)
 #endif
 
 
-//---------------- Digital-Pins ----------------------------------
+//---------------- Digital-Pins -------------------------------------
 #define BusyPin 4                 // Busy Signal vom DF-Player
 
 #ifdef EarPhone
@@ -389,7 +413,7 @@ const uint8_t setVolChSp = 5 ;
 
 #endif
 
-//****************** Definitionen für letzte gespielte Karte als Shortcut auf Playtaste legen ***********************
+//****************** Definitionen für letzte gespielte Karte als Shortcut auf Playtaste legen ************************
 #ifdef LastCard
  #define folderReg 201            // Ordner
  #define modeReg 202              // Abspielmodus
@@ -404,10 +428,10 @@ uint8_t EarVol;                                 // Lautstärke für den Kopfhör
 uint8_t MenuVol = MenueVolume;                  // Lautstärke für das Adminmenü auf Festwert
 bool longPressVol = false;                      // VolÄnderung durch longPress
 uint8_t countVolCh = 0 ;                        // Zählvariable speed VolÄnderung
-bool msgMin = true ;                            // Message minimale Lautstärke erreicht
-bool msgMax = true ;                            // Message maximale Lautstärke erreicht
+bool msgMin = true ;                            // Message "minimale Lautstärke erreicht"
+bool msgMax = true ;                            // Message "maximale Lautstärke erreicht"
 
-// ------------------Kopfhörer, Lautsprecher, Wecker ,Shortcuts ----------------------------
+// ------------------Shortcuts,  Kopfhörer, Lautsprecher, Wecker ----------------------------
 #ifndef Buttonboard
  #ifndef FIVEBUTTONS                            // 3 Tastenversion
  uint8_t NextLauterButton = 1;                  // Shortcut der Vor/Lautertaste
@@ -434,7 +458,7 @@ bool msgMax = true ;                            // Message maximale Lautstärke 
  uint8_t Matrix;                                // Taste die gedrückt wurde
  uint16_t Wert;                                 // Auslesewert des Matrixpins
 #endif
-
+uint8_t Steps = 1;                              // Sprungweite der vor/zurücktasten, Voreinstellung 1
 #ifdef EarPhone
  int Ear;                                       // Abfrageergebnis Pinabfrage EarPhonePin
 #endif
@@ -448,37 +472,34 @@ bool msgMax = true ;                            // Message maximale Lautstärke 
  bool ActWecker = false;                        // Wecker ist aktiviert worden, Voreinstellung NEIN
 #endif
 bool WeckerPlay = false;                        // Weckershortcut wird gespielt, Voreinstellung NEIN
-
 bool ShortCutIsPlaying = false ;                // Shortcut wird gespielt, Voreinstellung NEIN
-
 bool SETUP = true;                              // ist true solange setup() durchlaufen wird
-
 bool StdBy = false;                             // StanbyTimer aktiviert, Voreinstellung NEIN
-
 bool mp3error = false;                          // Error vom mp3 Player oder Bibliothek
 
 // ----------------------Adminmenü ----------------------------------------------------------------------
 uint8_t progmode = 0;                           // Modus für die Programmierung der Karten und shortcuts
-unsigned long Minuten = 2;                      // AdmTimeOut Vorgabe, Zeit in Minuten
+uint8_t Minuten = 2;                            // AdmTimeOut Vorgabe, Zeit in Minuten
 unsigned long AdmTimeOut = 0;                   // Abgelaufene TimeOutzeit
 unsigned long SollAdmTimeOut = Minuten * 60000; // AdmTimeOut Vorgabe Zeit ,Minuten * Millisekunden/minute
 bool AbbrActive = false;                        // Adminmenü abgebrochen, Voreinstellung Nein
 bool AdjVol = false;                            // Adminmenü in Vol-Einstellungen, Voreinstellung Aus
-
+bool rolling = true;                            // Adminmenü, Durchschalten der Optionen umlaufend, Voreinstelung JA
+uint8_t StartTrack;                             // letzter Rückgabewert für StartTrack Voicemenü
 // ---------------------- Batterieüberwachung -----------------------------------------------------------
 #ifdef AiO
 const float reference = 2.048;                  // Referenzspannung AiO
 const float steps = 4064;                       // Auflösung ADU
 #endif
-#ifdef BattControl
+#ifdef BatteryCheck
 #ifndef AiO
 float u_reference = 0.00 ;                      // Referenzspannung TonUINO Classic wird durch interne Messung ermittelt
 #endif
 float Vbatt = 3.40;                             // Batteriespannung (Wird bei der Messung auf aktuellen Wert gesetzt)
 float VbattGl = 3.20;                           // Geglättete Batteriespannung aus 60 Einzelmessungen,Voreinstellung 3,2V AiO
                                                 // Geglättete Batteriespannung aus 10 Einzelmessungen , Classic
-const float Vwarning = BtSchw;                  // Voltzahl für Warnung Batteriespannung, bei den #defines festgelegt
-const float Vshutdown = BtLeer;                 // Voltzahl für Shutdown, Batterie leer, bei den #defines festgelegt
+const float Vwarning = BatWarn;                 // Voltzahl für Warnung Batteriespannung, bei den #defines festgelegt
+const float Vshutdown = BatEmpty;               // Voltzahl für Shutdown, Batterie leer, bei den #defines festgelegt
 
 #ifndef AiO
 unsigned long TestIntervall = 6000;             // Testintervall Batterie ,Classic: 6 Sekunden
@@ -487,7 +508,7 @@ unsigned long TestIntervall = 6000;             // Testintervall Batterie ,Class
 unsigned long TestIntervall = 1000;             // Testintervall Batterie  ,   AiO: 1 Sekunde
 #endif
 
-uint8_t countTi = 0;                            // Anzahl der Testintervalle
+uint8_t countTi = 0;                            // Anzahl der durchlaufenen Testintervalle
 uint32_t SumValue = 0;                          // Summe der Sensorwerte aller  Testintervalle 
 
 unsigned long Now = 0;                          // millis() im Moment des Auslesens der Batteriespannung
@@ -495,7 +516,7 @@ unsigned long lastTest = 0;                     // Zeitpunkt letzte Prüfung der
 
 bool BattLeer = false;                          // Marker, leere Batterie erkannt, Voreinstellung Nein
 
-#endif  //BattControl
+#endif  //BatteryCheck
 
 // ******************** Definitionen für LED Animation *** by t@on **  modifyed by @atomphil  *******************
 #ifdef LED_SR
@@ -532,7 +553,7 @@ uint32_t  TrckChgProgress = 0;
 uint8_t lsrAnimationMode;                       // Animationsmodus - 0: Daueranimation, 1-2 einmalige Animation (als Unterbrechung zu 0)
 uint8_t lsrAnimationTrackMode;                  // Bei Animationsmodus Liedwechsel bestimmung der Farbe und Richtung
 
-//-- Vordefinierte Farben -------------
+//----------- Vordefinierte Farben ------------------------------
 uint32_t magenta = strip.Color(255, 0, 255, 64);
 uint32_t lightblue = strip.Color(32, 64, 128, 64);
 uint32_t red = strip.Color(255, 0, 0, 64);
@@ -548,29 +569,30 @@ bool lsrOffByStdby = false;                     // Ausschaltsignal LED-Animation
 #endif
 #endif
  
-// ********************** Cookies *************************************
+// ********************** Cookies ************************************************
                                                
 // Abhängig von der Hardwarekonfiguration wird die Struktur von mySettings verändert.
 // Zur Anpassung der Settings an die geänderte Hardware muss der EEPROM rückgesetzt werden. 
-// Durch eine von den #defines abhängige Änderung von myCookie wird das automatisch erledigt.
+// Durch eine von den #defines abhängige Änderung von myCookie erfolgt das automatisch.
 
 uint32_t myCookie = 130219560;                  // Grundwert myCookie zum Erkennen einer Softwareversion mit geänderter mySettings Struktur
                                                 // Eine Änderung von myCookie sorgt für einen automatischen Reset der mySettings
                                                 // Änderungen der #defines, die eine Strukturänderung bewirken, verändern myCookie
                                                 // durch Addition bei Hinzufügen einer neuen Funktion bzw durch Subtraktion bei Entfernen einer Funktion.
+                                                // Dadurch ist garantiert, das jede mySettings ändernde Konfiguration ein anderes myCookie erzeugt.
                                                 
 static const uint32_t cardCookie = 322417479;   // Cookie zum Erkennen der TonUINO-RFID Karten
                                                 // sorgt für das automatische Starten der Kartenkonfiguration bei neuen Karten
 
-//*********************** Buttons ************************************************
+//*********************** Buttons *************************************************
 //LONG_PRESS 1000                               // langer Druck >= 1 sekunde
 static const uint16_t LONG_PRESS = 1000;
-Button ButtonOne(ButtonPause);
-Button ButtonTwo(ButtonUp);
-Button ButtonThree(ButtonDown);
+Button ButtonOne(ButtonPause);                  // Taste 1
+Button ButtonTwo(ButtonUp);                     // Taste 2
+Button ButtonThree(ButtonDown);                 // Taste 3
 #ifdef FIVEBUTTONS
-Button ButtonFour(ButtonFourPin);
-Button ButtonFive(ButtonFivePin);
+Button ButtonFour(ButtonFourPin);               // Taste 4
+Button ButtonFive(ButtonFivePin);               // Taste 5
 #endif
 bool ignoreButtonOne = false;                   // Taste 1 übergehen, Voreinstellung Nein
 bool ignoreButtonTwo = false;                   // Taste 2 übergehen, Voreinstellung Nein
@@ -580,7 +602,7 @@ bool ignoreButtonFour = false;                  // Taste 4 übergehen, Voreinste
 bool ignoreButtonFive = false;                  // Taste 5 übergehen, Voreinstellung Nein
 #endif
 
-//********************* RFID Reader **********************************************
+//********************* RFID Reader ************************************************
 // MFRC522
 MFRC522 mfrc522(SdaPin, RstPin);                // Create MFRC522
 MFRC522::MIFARE_Key key;
@@ -589,7 +611,7 @@ const byte blockAddr = 4;
 const byte trailerBlock = 7;
 MFRC522::StatusCode status;
 
-// ******************** DF-Player *************************************************
+// ******************** DF-Player **************************************************
 // DFPlayer Mini
 SoftwareSerial mySoftwareSerial(2, 3); // RX, TX   // Digitalpins zur Steuerung des DF-Players
 uint8_t numFolders;                                // Anzahl der Ordner im Speichermedium
@@ -599,14 +621,14 @@ uint8_t currentQueueIndex;                         // index in queue[] aktuelle 
 uint8_t queueSize;                                 // Länge der queue
 uint8_t queue[255];                                // max 255 tracks/folder. entries 0..254 and values 1..255 are used.
 uint8_t volume;                                    // Lautstärke
-
-struct folderSettings {                            // Struktur der Foldersettigs
+// --------------------------------------------------------
+struct folderSettings {                            // Struktur der Foldersettings
   uint8_t folder;                                  // Ordnernummer
   uint8_t mode;                                    // Abspielmodus
   uint8_t special;                                 // Specialmodus Start-track
   uint8_t special2;                                // Specialmodus End-track
 };
-
+// ---------------------------------------------------------
 // this object stores nfc tag data
 struct nfcTagObject {                              // Struktur der RFID-Karte
   uint32_t cookie;                                 // Card-ID
@@ -617,10 +639,10 @@ struct nfcTagObject {                              // Struktur der RFID-Karte
   //  uint8_t special;                             // Starttrack Mode spezial
   //  uint8_t special2;                            // Enddtrack Mode spezial
 };
-
+// ----------------------------------------------------------
 struct adminSettings                               // admin settings stored in eeprom
 {
-  uint32_t cookie;
+  uint32_t cookie;                                 // gespeichertes mycookie
   byte version;                                    // Version der settings
   uint8_t maxVolume;                               // max Lautstärke Lautsprecher
   uint8_t minVolume;                               // min Lautstärke Lautsprecher
@@ -651,9 +673,9 @@ adminSettings mySettings;                          // Hardwareconfigurationen in
 nfcTagObject myCard;                               // settings für Kartenprogrammierung
 folderSettings *myFolder;
 unsigned long sleepAtMillis = 0;                   // Variable für den Standbytimer
-static uint16_t _lastTrackFinished;
+static uint16_t _lastTrackFinished;                // Zuletzt gespielter Track
 
-static void nextTrack(uint16_t track);
+static void nextTrack(uint16_t track);             // Nächster Track
 //------------------------------------------------
 uint8_t voiceMenu(                                 // Rückgabewert voiceMenu
   int numberOfOptions,                             // Anzahl der Optionen
@@ -668,7 +690,7 @@ uint8_t voiceMenu(                                 // Rückgabewert voiceMenu
 void writeCard(nfcTagObject nfcTag);               // RFID Karte schreiben
 void dump_byte_array(byte * buffer, byte bufferSize);  // Auslesen HEX-Daten
 void adminMenu(bool fromCard = false);             // Adminmenü von Karte starten, Voreinstellung NEIN
-void playShortCut(uint8_t shortCut);               // Shortcut abspielen
+//void playShortCut(uint8_t shortCut);               // Shortcut abspielen
 bool knownCard = false;                            // Karte bekannt, Voreinstellung NEIN
 bool isPlaying();                                  // Marker, Wiedergabe läuft
 
@@ -679,11 +701,10 @@ bool isPlaying();                                  // Marker, Wiedergabe läuft
 class Mp3Notify {
   public:
 
-    // ***************** Error-meldungen des df-players **************************
+// ***************** Error-meldungen des df-players **************************
 
     static void OnError(uint16_t returnValue)
     {
-//#ifdef Konsole
       switch (returnValue)
       {
         case DfMp3_Error_Busy: {
@@ -741,7 +762,6 @@ class Mp3Notify {
       }
       Serial.println(F(" error"));
       
-//#endif
     mp3error = true;
     }
 
@@ -749,7 +769,9 @@ class Mp3Notify {
     static void PrintlnSourceAction(DfMp3_PlaySources source, const char* action)
     {
       if (source & DfMp3_PlaySources_Sd) Serial.print("SD Karte ");
-      //if (source & DfMp3_PlaySources_Usb) Serial.print("USB ");
+#ifdef USB-Stick
+      if (source & DfMp3_PlaySources_Usb) Serial.print("USB ");
+#endif
       //if (source & DfMp3_PlaySources_Flash) Serial.print("Flash ");
       Serial.println(action);
     }
@@ -791,7 +813,7 @@ void initQueue(uint8_t from, uint8_t to)                    // Von und Bis einge
     queue[x] = x + from;
 }
 
-// ************* Zufallsliste erstellen ***********************
+// ************** Zufallsliste erstellen ***********************
 void shuffleQueue()                                         // Queue für die Zufallswiedergabe erstellen
 {
   for (uint8_t i = 0; i < queueSize; i++)
@@ -803,7 +825,7 @@ void shuffleQueue()                                         // Queue für die Zu
   }
 }
 
-// ************* Track Index **********************************
+// ************** Track Index **********************************
 uint8_t findQueueIndex(uint8_t track)                       // Track Index finden
 {
   for (uint16_t i = 0; i < queueSize; i++)
@@ -858,12 +880,12 @@ void writeSettingsToFlash() {               // my Settings im EEPROM speichern
 #endif
 }
 
-// ******************************* my Settings zurücksetzen ****************
+// ********************** my Settings zurücksetzen ****************
 void resetSettings() {                     // my Settings auf defaultwerte zurücksetzen
 #ifdef Konsole
   Serial.println(F("Reset Settings"));
 #endif
-  mySettings.cookie = myCookie;
+  mySettings.cookie = myCookie;            // aktuellen myCookie zuweisen
   mySettings.version = 2;
   mySettings.maxVolume = 25;               // max.Lautstärke Lautsprecher
   mySettings.minVolume = 2;                // min.Lautstärke Lautsprecher
@@ -879,18 +901,18 @@ void resetSettings() {                     // my Settings auf defaultwerte zurü
   mySettings.invertVolumeButtons = false;  // Funktion der Vol-Tasten umkehren AUS 3-Tastenversion
 #endif
 #ifdef FIVEBUTTONS
-  mySettings.invertVolumeButtons = true;  // Funktion der Vol-Tasten umkehren EIN 5-Tastenversion
+  mySettings.invertVolumeButtons = true;   // Funktion der Vol-Tasten umkehren EIN 5-Tastenversion
 #endif
-#ifndef FIVEBUTTONS
+#ifndef FIVEBUTTONS                        // Shortcuts 3 Tasten-Version
   #ifndef Buttonboard
-  mySettings.shortCuts[0].folder = 0;      // kein Shortcut Play-Pausetaste (Taste 1)
+  mySettings.shortCuts[0].folder = 0;      // kein Shortcut Play-Pausetaste  (Taste 1)
   mySettings.shortCuts[1].folder = 0;      // kein Shortcut Vor-Lautertaste  (Taste 2)
   mySettings.shortCuts[2].folder = 0;      // kein Shortcut Rück-Leisertaste (Taste 3)
   mySettings.shortCuts[3].folder = 0;      // kein Shortcut Welcomesound
   mySettings.shortCuts[4].folder = 0;      // kein Shortcut Weckersound
   #endif
 #endif
-#ifdef FIVEBUTTONS
+#ifdef FIVEBUTTONS                         // Shortcuts 5 Tasten-Version 
   mySettings.shortCuts[0].folder = 0;      // kein Shortcut Pausetaste (Taste 1)
   mySettings.shortCuts[1].folder = 0;      // kein Shortcut Vor-taste  (Taste 2)
   mySettings.shortCuts[2].folder = 0;      // kein Shortcut Rück-taste (Taste 3) 
@@ -899,8 +921,8 @@ void resetSettings() {                     // my Settings auf defaultwerte zurü
   mySettings.shortCuts[5].folder = 0;      // kein Shortcut Welcomesound
   mySettings.shortCuts[6].folder = 0;      // kein Shortcut Weckersound
 #endif
-#ifdef Buttonboard
-  mySettings.shortCuts[0].folder = 0;      // kein Shortcut Play-Pausetaste (Taste 1)
+#ifdef Buttonboard                         // Shortcuts Buttonboard-Version
+  mySettings.shortCuts[0].folder = 0;      // kein Shortcut Play-Pausetaste  (Taste 1)
   mySettings.shortCuts[1].folder = 0;      // kein Shortcut Vor-Lautertaste  (Taste 2)
   mySettings.shortCuts[2].folder = 0;      // kein Shortcut Rück-Leisertaste (Taste 3)
   mySettings.shortCuts[3].folder = 0;      // kein Shortcut Taste A
@@ -962,9 +984,9 @@ void loadSettingsFromFlash()
 #ifdef AiO
   EEPROM_get(address, mySettings);
 #endif
-  if (mySettings.cookie != myCookie)
+  if (mySettings.cookie != myCookie)      // wenn durch Änderungen bei den #defines myCookie verändert wurde -> Reset der mySettings
     resetSettings();
-  migrateSettings(mySettings.version);
+    migrateSettings(mySettings.version);
 
   // ****************** my Settings im Ser Monitor anzeigen *********************
 
@@ -1089,7 +1111,7 @@ void loadSettingsFromFlash()
 void LockPause()
 {
 #ifdef Konsole
-  Serial.println(F("Pause -> LOCKED!"));      // Play/Pausetaste sperren
+  Serial.println(F("Pause -> LOCKED!"));     // Play/Pausetaste sperren
 #endif
   return true;
 }
@@ -1185,7 +1207,7 @@ class Modifier
 Modifier *activeModifier = NULL;
 
 // *** Modkarte **** Sleeptimer mit Ausfaden Lautstärke und Tastensperre ************
-// Dieses Modifier wird zusätzlich genutzt beim shutdown wenn Batterie leer. Zeit 30 Sekunden.
+// Dieses Modifier wird zusätzlich genutzt beim shutdown wenn Batterie leer. Zeit 20 Sekunden.
 
 class SleepTimer : public Modifier
 {
@@ -1194,7 +1216,7 @@ class SleepTimer : public Modifier
     unsigned long lastVolCheck = 0;
     uint16_t lastVolume = 0;
 #ifdef LED_SR
-    unsigned long Brightn = 64;                      // Startwert für Ausfaden der Helligkeit der LED-Animation
+    unsigned long Brightn = 64;                           // Startwert für Ausfaden der Helligkeit der LED-Animation
 #endif
 
   public:
@@ -1232,7 +1254,7 @@ class SleepTimer : public Modifier
           Serial.print(F("Ausfaden Volume: "));
           Serial.println(val);
 #endif
-#ifdef LED_SR                                  // Helligkeit der LED Animation ausfaden
+#ifdef LED_SR                                             // Helligkeit der LED Animation ausfaden
           Brightn = (val) ;
           if (Brightn >= 6)
           {
@@ -1246,7 +1268,7 @@ class SleepTimer : public Modifier
     //****************** SleepTimer (Schlummermodus) ***********************
     // Nach Auflegen der Modifikationskarte "Schlummermodus" wird bei laufender Wiedergabe
     // der Tonuino nach Ablauf der voreingestellten Zeit ausgeschaltet.
-    // Tasten und neue Karte sind gesperrt.
+    // Vor-Zurück Tasten und neue Karte sind gesperrt.
     // Die letzten 20 Sekunden wird die Lautstärke gleichmäßig auf 0 verringert.
     // Danach schaltet der Standbytimer sofort AUS.
 
@@ -1259,15 +1281,15 @@ class SleepTimer : public Modifier
 #endif
       this->sleepAtMillis = millis() + minutes * 60000;
       this->lastVolCheck = millis();
-#ifdef BattControl
+#ifdef BatteryCheck
       if (BattLeer == false)
       {
 #endif
         delay(500);
-        mp3.playAdvertisement(302);                   //advert-302- Schlummerfunktion aktiviert.
+        mp3.playAdvertisement(302);                 //advert-302- Schlummerfunktion aktiviert.
         delay(500);
 
-#ifdef BattControl
+#ifdef BatteryCheck
       }
 #endif
     }
@@ -1279,7 +1301,8 @@ class SleepTimer : public Modifier
         {
           LockPause();           // Play/Pausetaste sperren
         }
-    */  // ---------------------------------------------------------------
+    */
+    // ---------------------------------------------------------------
     virtual bool handleNextButton()
     {
       LockNext();             // Next Taste sperren
@@ -1349,7 +1372,7 @@ class FreezeDance: public Modifier
 #endif
         if (isPlaying())
         {
-          mp3.playAdvertisement(301);               //advert-301- Und Stopp!**Ticken**Nicht bewegen!**Ticken**weiter geht´s!
+          mp3.playAdvertisement(301);            //advert-301- Und Stopp!**Ticken**Nicht bewegen!**Ticken**weiter geht´s!
           delay(500);
         }
         else
@@ -1357,7 +1380,7 @@ class FreezeDance: public Modifier
           if (StdBy == false)
           setstandbyTimer();
         }
-        setNextStopAtMillis();                      // Zeit zum nächsten Stop setzen
+        setNextStopAtMillis();                   // Zeit zum nächsten Stop setzen
       }
     }
     FreezeDance(void)
@@ -1365,7 +1388,7 @@ class FreezeDance: public Modifier
 #ifdef Konsole
       Serial.println(F("FreezeDance "));
 #endif
-      if (isPlaying())                              // Bei laufender Wiedergabe
+      if (isPlaying())                          // Bei laufender Wiedergabe
       {
         mp3.playAdvertisement(300);             //advert-300- Wir spielen jetzt den Stopptanz. Wenn die Musik stoppt, bleibe stehen!
       }
@@ -1380,8 +1403,8 @@ class FreezeDance: public Modifier
     uint8_t getActive()
     {
 #ifdef Konsole
-      Serial.println(F("deaktiviert"));               // Deaktivieren durch erneutes Auflegen dieser
-#endif                                                // oder einer anderen Modifikationskarte
+      Serial.println(F("deaktiviert"));         // Deaktivieren durch erneutes Auflegen dieser
+#endif                                          // oder einer anderen Modifikationskarte
       return 2;
     }
 };
@@ -1422,7 +1445,7 @@ class Locked: public Modifier
 
     virtual bool handleRFID(nfcTagObject *newCard)
     {
-      LockRFID();             // Neue Karte abspielen sperren
+      LockRFID();            // Neue Karte abspielen sperren
     }
     // ---------------------------------------------------------------
 
@@ -1501,8 +1524,8 @@ class ToddlerMode: public Modifier
     uint8_t getActive()
     {
 #ifdef Konsole
-      Serial.println(F("deaktiviert"));            // Deaktivieren durch erneutes Auflegen dieser
-#endif                                             // oder einer anderen Modifikationskarte
+      Serial.println(F("deaktiviert"));           // Deaktivieren durch erneutes Auflegen dieser
+#endif                                            // oder einer anderen Modifikationskarte
       return 4;
     }
 };
@@ -1643,12 +1666,12 @@ class RepeatSingleModifier: public Modifier
 // **************** aktuellen Titel spielen ********************
 void playCurrentTrack()
 {
-#ifdef Konsole
+//#ifdef Konsole
   Serial.print(F("Play queue index: "));
   Serial.print(currentQueueIndex);                                 // Tracknummer in der Queue
-  Serial.print(F(" Track: "));
+  Serial.print(F(", Track: "));
   Serial.println(queue[currentQueueIndex]);                        // Tracknummer im Ordner
-#endif
+//#endif
   mp3.playFolderTrack(myFolder->folder, queue[currentQueueIndex]); // Abspielen des aktuellen Titels in der Queue
 }
 
@@ -1692,53 +1715,72 @@ static void nextTrack(uint16_t track)
 
     case 2: //Album
     case 7: //Album-SpezialVonBis
-      if (currentQueueIndex + 1 < queueSize)                      // letzter Track in Queue?
-        currentQueueIndex++;
-      else                                                        // Ende der Queue
-        bStop = true;                                             // Stop am Ende der Queue
+//#ifdef Konsole
+        Serial.println(queueSize);
+        Serial.print(currentQueueIndex);
+        Serial.print(" --- > ");
+//#endif
+if((currentQueueIndex + Steps) < queueSize)                 // wenn Queueindex plus Sprung unter queueSize
+currentQueueIndex = (currentQueueIndex + Steps);            // Weiterspringen in der Queue
+    else                                                    // wenn Queueindex plus Sprung gleich oder größer queueSize
+    {
+     currentQueueIndex = queueSize -1;                      // Gehe zum Ende der queue
+//#ifdef Konsole
+      Serial.println(currentQueueIndex);
+      Serial.println(F("  Ende Queue "));   
+ //#endif
+    }     
+     Steps = 1;                                             // Rücksetzen der Sprungweite auf 1 für Einzelschritt
       break;
 
     case 3: //Party
     case 8: //Party-SpezialVonBis
-      currentQueueIndex++;
-      if (currentQueueIndex == queueSize)                         // Ende der Queue
+      currentQueueIndex = currentQueueIndex + Steps;        // Weiterschalten in der Queue
+      if (currentQueueIndex >= queueSize)                   // Ende der Queue erreicht oder überschritten
       {
 #ifdef Konsole
         Serial.println(F("Ende Queue --> mische neu."));
 #endif
-        shuffleQueue();                                            // Am Ende der Queue soll neu gemischt werden
-        currentQueueIndex = 0;                                     // Ende der Queue -> springe zum Start
-     bStop = false ;                                               // Queue wird endlos abgespielt
+        shuffleQueue();                                      // Am Ende der Queue soll neu gemischt werden
+        currentQueueIndex = 0;                               // Ende der Queue -> springe zum Start
+     bStop = false ;                                         // Queue wird endlos abgespielt
       }
+      Steps = 1;                                             // Rücksetzen der Sprungweite auf 1 für Einzelschritt
       break;
 
     case 5: //Hoerbuch
-      if (currentQueueIndex + 1 < queueSize)                        // Prüfung letzter Track in Queue?
+      if (currentQueueIndex + Steps < queueSize)              // Prüfung letzter Track in Queue?
       {
-        currentQueueIndex++;
+        currentQueueIndex = currentQueueIndex + Steps;
+        if (currentQueueIndex + Steps >= queueSize)
+        {
+         currentQueueIndex = queueSize -1; 
+        }
 #ifndef AiO
-        EEPROM.update(myFolder->folder, queue[currentQueueIndex]);  // Fortschritt im EEPROM abspeichern
+        EEPROM.update(myFolder->folder, queue[currentQueueIndex]); // Fortschritt im EEPROM abspeichern
 #endif
 #ifdef AiO
-        EEPROM_update(myFolder->folder, queue[currentQueueIndex]);  // Fortschritt im EEPROM abspeichern
+        EEPROM_update(myFolder->folder, queue[currentQueueIndex]); // Fortschritt im EEPROM abspeichern
 #endif
 #ifdef Konsole
         Serial.println(F("Sp.-Fortschritt"));
 #endif
+        Steps = 1;                                                  // Rücksetzen der Sprungweite auf 1 für Einzelschritt
         break;
       }
       else                                                          // Ende der Queue
       {
 #ifndef AiO
-        EEPROM.update(myFolder->folder, 1);                         // Fortschritt zurücksetzen
+        EEPROM.update(myFolder->folder, 1);                         // Fortschritt zurücksetzen (Classik)
 #endif
 #ifdef AiO
-        EEPROM_update(myFolder->folder, 1);                         // Fortschritt zurücksetzen
+        EEPROM_update(myFolder->folder, 1);                         // Fortschritt zurücksetzen (AiO)
 #endif
 #ifdef Konsole
         Serial.println(F("Hörb->Anfang"));
 #endif
         bStop = true;                                               // Stop am Ende der Queue
+        Steps = 1;                                                  // Rücksetzen der Sprungweite auf 1 für Einzelschritt
         break;
       }
 
@@ -1748,7 +1790,7 @@ static void nextTrack(uint16_t track)
   // *************** queue zu Ende  ***********
   if (bStop)
   {
-  if (!isPlaying())  
+  if (!isPlaying())             // wenn Titel beendet ist
   {
 #ifdef Konsole
     Serial.println(F("Stop"));
@@ -1757,10 +1799,10 @@ static void nextTrack(uint16_t track)
     setstandbyTimer();
   }
   }
-  else
+  else                         // wenn bStop nicht aktiv
   {
     disablestandbyTimer();
-    playCurrentTrack();
+    playCurrentTrack();        // aktuellen Titel spielen
   }
   delay(500);
 }
@@ -1774,6 +1816,7 @@ static void previousTrack()
 #endif
   switch (myFolder->mode)
   {
+  // ----------------------------------------------------
     /*
       case 1;
       case 6:
@@ -1781,46 +1824,63 @@ static void previousTrack()
 
        break;
     */
+  // -----------------------------------------------------
     case 2: //Album
     case 7: //Album-SpezialVonBis
 #ifdef Konsole
       Serial.print(F("Album -> vorh.Track : "));
 #endif
-      if (currentQueueIndex > 0) currentQueueIndex--;   // Prüfung ob Queue am Anfang
-      break;
+ 
+      if (currentQueueIndex > (Steps -1))              // Prüfung ob QueueIndex noch über der Sprungweite liegt
+        
+        currentQueueIndex = currentQueueIndex - Steps; // Rücksprung um Sprungweite
 
+      else                                             // Wenn QueueIndex 0 oder Wert unter Sprungweite erreicht hat
+        currentQueueIndex = 0;                         // QueueIndex auf Null setzen
+        Steps = 1;                                     // Rücksetzen der Sprungweite auf 1 für Einzelschritt
+      break;
+  // -----------------------------------------------------
     case 3: // Party
     case 8: // Party-SpezialVonBis
-      if (currentQueueIndex > 0)
-        currentQueueIndex--;
+      if (currentQueueIndex > (Steps -1))              // Prüfung ob QueueIndex noch über der Sprungweite liegt
+        
+        currentQueueIndex = currentQueueIndex - Steps; // Rücksprung um Sprungweite
 
-      else
-        currentQueueIndex = queueSize - 1;
+      else                                             // Wenn QueueIndex 0 oder Wert unter Sprungweite erreicht hat
+        currentQueueIndex = queueSize - 1;             // QueueIndex auf höchsten Wert setzen
+        Steps = 1;                                     // Rücksetzen der Sprungweite auf 1 für Einzelschritt
       break;
-
+  // -----------------------------------------------------
     case 4: // Einzel
 #ifdef Konsole
       Serial.println(F("Single Mod.-> play Track v.vorne"));
 #endif
       break;
+  // -----------------------------------------------------
     case 5: // Hörbuch
 #ifdef Konsole
       Serial.println(F("Hörb.Modus -> vorh.Track und "
                        "Fortschr.speichern"));
 #endif
 
-      if (currentQueueIndex > 0)
-      {
-        currentQueueIndex--;
+     if (currentQueueIndex > (Steps -1))                           // Prüfung ob QueueIndex noch über der Sprungweite liegt
+
+       currentQueueIndex = currentQueueIndex - Steps;              // Rücksprung um Sprungweite
+
+     else                                                          // Wenn QueueIndex 0 oder Wert unter Sprungweite erreicht hat
+
+        currentQueueIndex = 0;                                     // QueueIndex auf Null setzen
+    Steps = 1;                                                     // Rücksetzen der Sprungweite auf 1 für Einzelschritt
 #ifndef AiO
-        EEPROM.update(myFolder->folder, queue[currentQueueIndex]);  // Fortschritt im EEPROM abspeichern
+        EEPROM.update(myFolder->folder, queue[currentQueueIndex]); // Fortschritt im EEPROM abspeichern (Classic)
 #endif
 #ifdef AiO
-        EEPROM_update(myFolder->folder, queue[currentQueueIndex]);  // Fortschritt im EEPROM abspeichern
+        EEPROM_update(myFolder->folder, queue[currentQueueIndex]); // Fortschritt im EEPROM abspeichern (AiO)
 #endif
-      }
+ //     }
 
       break;
+  // -----------------------------------------------------
     default:
       return; // do nothing
 
@@ -1833,7 +1893,7 @@ static void previousTrack()
 
 // ************************* Spannungsüberwachung der Batterie *********************************
 
-#ifdef BattControl
+#ifdef BatteryCheck
 #ifndef AiO                           // TonUINO Classic
 // ************* Funktion zur Ermittlung der genauen Referenzspannung ****************
 
@@ -1873,7 +1933,7 @@ void VoltControl()
  // Serial.print( u_reference );
  // Serial.println(" V");
 
-  uint16_t value = analogRead(VControlPin);           // Sensorwert Batteriespannung
+  uint16_t value = analogRead(BatteryCheckPin);       // Sensorwert Batteriespannung
  /* 
   Vbatt = value * u_reference / 1024 ;                // Berechnung der genauen Batteriespannung in Volt Einzelmessung
   Serial.print(F("Batt =  "));                        // Bei Aktivierung wird jede Einzelmessung im SerMonitor angezeigt
@@ -1898,7 +1958,7 @@ void VoltControl()
 
 #ifdef AiO
   
-  uint16_t value = analogRead(VControlPin);           // Sensorwert Batteriespannung
+  uint16_t value = analogRead(BatteryCheckPin);       // Sensorwert Batteriespannung
 /*                                                    // Bei Aktivierung, Anzeige jeder Einzelmessung im SerMonitor
   Serial.print(value);                                // Je nach Spannung Wert zwischen 0 und 4064
   Serial.print(" - ");
@@ -1978,7 +2038,7 @@ void VoltControl()
  }               //gemeinsame Schlussklammer } Ende If countTi ,(60 AiO ),(10 Classic)
  
 }
-#endif          // Ende #ifdef BattControl           
+#endif          // Ende #ifdef BatteryCheck           
 
 
 //**** Funktionen für den Standby Timer (z.B. über Pololu-Switch oder Mosfet) ********************
@@ -2010,7 +2070,6 @@ void setstandbyTimer()                                                // Standby
     sleepAtMillis = 0;                                                // Wenn Standbytimer nicht gesetzt ,Standbytimer deaktivieren
     StdBy = false;                                                    // Marker StandByTimer deaktiviert
   }
-
 }
 
 void disablestandbyTimer()                                            // Standbytimer deaktivieren
@@ -2032,9 +2091,9 @@ void checkStandbyAtMillis()                                         // Standbyti
 // ************* Ausschalten **************************
 void ShutDown()                                                     // Ausschalten
 {
-#ifdef SpkOnOff
-   SpkOff();                                                         // Stummschalten
-#endif
+  #ifdef SpkOnOff
+  SpkOff();                                                         // Stummschalten
+  #endif
   Serial.println(F("Power OFF!"));
 
 #ifdef USB-Stick
@@ -2045,7 +2104,7 @@ void ShutDown()                                                     // Ausschalt
 #endif
 
 #ifdef LED_SR                                                       // LED-Ausschaltanimation
-
+                                                                    // Farbfolge Rot-Grün-Blau
 strip.fill(red);
 strip.show();
 delay(1000);
@@ -2136,24 +2195,24 @@ bool setupPlayShortcut(folderSettings * theFolder)
 // ************************ lauter **************************************************
 void lauter()                                 // Lautstärke erhöhen
 {
-  mp3.increaseVolume();                       // Lautstärke erhöhen
   volume++;                                   // Lautstärkewert erhöhen 
-  #ifdef Konsole
+  mp3.setVolume (volume);
+  //#ifdef Konsole
   msgMin = true ;
   Serial.print(F("Lauter -> "));
   Serial.println(volume);
-  #endif
+  //#endif
 }
 // ************************ leiser **************************************************
-void leiser()                                  // Lautstärke verringern
+void leiser()                                 // Lautstärke verringern
 {
-  mp3.decreaseVolume();                        // Lautstärke verringern
-  volume--;                                    // Lautstärkewert verringern
-  #ifdef Konsole
+  volume--;                                   // Lautstärkewert verringern
+  mp3.setVolume (volume);
+  //#ifdef Konsole
   msgMax = true ;
   Serial.print(F("Leiser -> "));
   Serial.println(volume);
-  #endif
+  //#endif
 }
 
 // ************************************************************************************
@@ -2180,7 +2239,7 @@ void volumeUpButton()
   if (SpkisOn == true)                                 // wenn Lautsprecher an
   {
 #endif
-    #ifdef Konsole
+    //#ifdef Konsole
     if (volume >= mySettings.maxVolume )               // wenn Vol größer oder gleich maxVolume Spk
     {
       if (msgMax == true)
@@ -2189,7 +2248,7 @@ void volumeUpButton()
       msgMax = false ;
       }
     }
-    #endif
+    //#endif
     if (volume < mySettings.maxVolume)                // wenn Vol kleiner maxVolume Spk
     {
       if (longPressVol == true)                       // VolÄnderung durch longPress
@@ -2205,7 +2264,7 @@ void volumeUpButton()
 #ifdef EarPhone 
   else                                                 // wenn Lautsprecher aus
   {
-    #ifdef Konsole
+    //#ifdef Konsole
     {
     if (volume >= mySettings.maxEarVol)                // wenn Vol größer oder gleich maxVolume Ear
      {
@@ -2216,7 +2275,7 @@ void volumeUpButton()
       }
      }
     }
-    #endif
+    //#endif
     if (volume < mySettings.maxEarVol)                 // wenn Vol kleiner maxVolume Ear
     {
       if (longPressVol == true)                        // VolÄnderung durch longPress
@@ -2242,7 +2301,7 @@ void volumeDownButton()
   if (SpkisOn == true)                                 // wenn Lautsprecher an
   {
 #endif    
-    #ifdef Konsole
+    //#ifdef Konsole
      if (volume <= mySettings.minVolume)               // wenn Vol kleiner oder gleich minVolume 
      {
      if (msgMin == true) 
@@ -2251,7 +2310,7 @@ void volumeDownButton()
       msgMin = false ;
       }
     } 
-    #endif
+    //#endif
     if (volume > mySettings.minVolume)                 // wenn Vol größer min Volume Spk
     {
      if (longPressVol == true)                         // VolÄnderung durch longPress
@@ -2266,7 +2325,7 @@ void volumeDownButton()
 #ifdef EarPhone 
   else                                                 // wenn Lautsprecher aus
   {
-    #ifdef Konsole
+    //#ifdef Konsole
     if (volume <= mySettings.minEarVol)                // wenn Vol kleiner oder gleich minVolume 
     {
       if (msgMin == true)
@@ -2275,7 +2334,7 @@ void volumeDownButton()
       msgMin = false ;
      }
     }
-    #endif
+    //#endif
     if (volume > mySettings.minEarVol)                 // wenn Vol größer minVolume Ear
     {
       if (longPressVol == true)                        // VolÄnderung durch longPress
@@ -2287,32 +2346,57 @@ void volumeDownButton()
   }
 #endif
 
-  countVolCh ++ ;                                       // Verzögerungszähler einen Schritt weiterschalten
-  if (countVolCh >= setVolChSp) countVolCh = 0 ;        // Verzögerungswert erreicht-> Zähler zurücksetzen
+  countVolCh ++ ;                                      // Verzögerungszähler einen Schritt weiterschalten
+  if (countVolCh >= setVolChSp) countVolCh = 0 ;       // Verzögerungswert erreicht-> Zähler zurücksetzen
 }
 
 // ************ Titel Vorwärts Taste *************
 void nextButton()
 {
-  if (activeModifier != NULL)                           // wenn Modifikation aktiv
-    if (activeModifier->handleNextButton() == true)     // wenn Taste gesperrt
-      return;                                           // Titel nicht weiter
+  if (activeModifier != NULL)                          // wenn Modifikation aktiv
+    if (activeModifier->handleNextButton() == true)    // wenn Taste gesperrt
+      return;                                          // Titel nicht weiter
+ Steps = 1;
+  nextTrack(_lastTrackFinished + 1);                   // beliebige tracknummer außer _lastTrackFinished
 
-  nextTrack(_lastTrackFinished + 1);                    // beliebige tracknummer außer _lastTrackFinished
-
-  delay(300);
+  delay(500);
 }
 // ************ Titel Zurück Taste *************
 void previousButton()
 {
-  if (activeModifier != NULL)                            // wenn Modifikation aktiv
-    if (activeModifier->handlePreviousButton() == true)  // wenn Taste gesperrt
-      return;                                            // Titel nicht zurück
+  if (activeModifier != NULL)                           // wenn Modifikation aktiv
+    if (activeModifier->handlePreviousButton() == true) // wenn Taste gesperrt
+      return;                                           // Titel nicht zurück
 
-  previousTrack();                                       // Track zurück
-  delay(300);
+  previousTrack();                                      // Track zurück
+  delay(500);
 }
 
+#ifdef FIVEBUTTONS
+#ifdef JumpLongPress
+
+// ************ Titel Vorwärts Sprung *************
+void JumpForw()
+{
+  if (activeModifier != NULL)                          // wenn Modifikation aktiv
+    if (activeModifier->handleNextButton() == true)    // wenn Taste gesperrt
+      return;                                          // Titel nicht weiter
+  Steps = SetJump;                                     // Sprungweite setzen
+  nextTrack(_lastTrackFinished + 1);                   // beliebige tracknummer außer _lastTrackFinished
+  delay(3000);                                         // Delay zum Anspielen des angesprungenen Titels
+}
+// ************ Titel Rückwärts Sprung *************
+void JumpBackw()
+{
+  if (activeModifier != NULL)                           // wenn Modifikation aktiv
+    if (activeModifier->handlePreviousButton() == true) // wenn Taste gesperrt
+      return;                                           // Titel nicht zurück
+Steps = SetJump;                                        // Sprungweite setzen
+  previousTrack();                                      // Track zurück
+  delay(3000);                                          // Delay zum Anspielen des angesprungenen Titels
+}
+#endif
+#endif
 // ***************** Ordner abspielen ******************
 void playFolder()
 {
@@ -2395,44 +2479,43 @@ void playFolder()
       return;
   }
 
+#ifdef Konsole
   if (printRange)                             // Spezial - Bereich im ser Mon ausgeben
   {
-#ifdef Konsole
     Serial.print(F("Track "));
-    Serial.print(myFolder->special);                       // StartTrack
+    Serial.print(myFolder->special);          // StartTrack
     Serial.print(F(" bis "));
-    Serial.println(myFolder->special2);                    // EndTrack
-#endif
+    Serial.println(myFolder->special2);       // EndTrack
   }
+#endif
+ 
+  initQueue(fromTrack, toTrack);                                // queue erstellen [fromTrack, toTrack], shuffle if requested
+  if (randomOrder) shuffleQueue();                              // bei aktivem Zufall, Queue mischen.
 
-  // queue erstellen [fromTrack, toTrack], shuffle if requested
-  initQueue(fromTrack, toTrack);
-  if (randomOrder) shuffleQueue();
+  
+  if (randomStart) firstTrack = random(fromTrack, toTrack + 1); // festlegen start track
+  currentQueueIndex = findQueueIndex(firstTrack);               // festlegen queue index für firstTrack
+  if (currentQueueIndex == 0xff) currentQueueIndex = 0;         // bei Fehler findQueueIndex, Index auf 0 setzen
 
-  // festlegen start track and its queue index
-  if (randomStart) firstTrack = random(fromTrack, toTrack + 1);
-  currentQueueIndex = findQueueIndex(firstTrack);
-  if (currentQueueIndex == 0xff) currentQueueIndex = 0;     // if findQueueIndex failed
-
-  playCurrentTrack();                                       // start playing
+  playCurrentTrack();                                           // start playing
 
 
 
-  // *********************************************************************************
-  // ************** Update letzte Karte im EEPROM speichern **************************
-  // **********Gespielte Shortcuts sollen nicht als letzte Karte gespeichert werden***
+  // ***********************************************************************************
+  // ************** Update letzte Karte im EEPROM speichern ****************************
+  // ********** Gespielte Shortcuts sollen nicht als letzte Karte gespeichert werden ***
 
 #ifdef LastCard
   if (ShortCutIsPlaying == false)                         // wenn Marker  "shortcut wird nicht gespielt"
   {
 #ifndef AiO                                               // TonUINO Classic
-    EEPROM.update(folderReg, myFolder->folder);           // EEPROM updaten letzte gespielte Karte
+    EEPROM.update(folderReg, myFolder->folder);           // EEPROM update letzte gespielte Karte
     EEPROM.update(modeReg, myFolder->mode);               // EEPROM update Abspielmodus
     EEPROM.update(specialReg, myFolder->special);         // EEPROM Update Starttrack
     EEPROM.update(specialReg2, myFolder->special2);       // EEPROM update Endtrack
 #endif
 #ifdef AiO                                                // TonUINO AiO
-    EEPROM_update(folderReg, myFolder->folder);           // EEPROM updaten letzte gespielte Karte
+    EEPROM_update(folderReg, myFolder->folder);           // EEPROM update letzte gespielte Karte
     EEPROM_update(modeReg, myFolder->mode);               // EEPROM update Abspielmodus
     EEPROM_update(specialReg, myFolder->special);         // EEPROM Update Starttrack
     EEPROM_update(specialReg2, myFolder->special2);       // EEPROM update Endtrack
@@ -2442,7 +2525,7 @@ void playFolder()
 #endif
   }
 
-  ShortCutIsPlaying = false ;                            // Marker rücksetzen "Shortcut wird gespielt"
+  ShortCutIsPlaying = false ;                             // Marker rücksetzen "Shortcut wird gespielt"
 #endif
 }
 
@@ -2469,11 +2552,12 @@ void playShortCut(uint8_t shortCut)
   //---- gespeicherten Shortcut abspielen ----
   if (mySettings.shortCuts[shortCut].folder != 0)       // wenn ein shortcut gespeichert ist
   {
-    myFolder = &mySettings.shortCuts[shortCut];         // aktueller Track -> Gespeichert in shortcut
     ShortCutIsPlaying = true ;                          // Marker setzen "shortcut wird gespielt"
+    myFolder = &mySettings.shortCuts[shortCut];         // aktueller Track -> Gespeichert in shortcut
     playFolder();                                       // shortcut spielen
+    
     disablestandbyTimer();
-    delay(1000);
+    delay(500);
   }
   else                                                  // wenn kein shortcut gespeichert ist
   {
@@ -2499,7 +2583,6 @@ void AdmTimeOutStart()
 // **************** Abbruch nach TimeOut Adminmenü **********************
 void AbbrAdminTimeout()
 {
-
   if ((millis() - AdmTimeOut) >= SollAdmTimeOut)      // Abbruch nach TimeOut
   {
     AdmTimeOut = millis();
@@ -2507,12 +2590,11 @@ void AbbrAdminTimeout()
 #ifdef Konsole
     Serial.println(F("TimeOut-Admin "));
 #endif
-    mp3.playMp3FolderTrack(803);                      // 803- Abbruch nach Timeout,Schalte aus
+    mp3.playMp3FolderTrack(803);                      // 803- "Abbruch nach Timeout,Schalte aus"
     waitForTrackToFinish();
     delay (5000);
     ShutDown();                                       // Ausschalten
     return;
-
   }
 }
 // *******************************************************************************
@@ -2555,7 +2637,7 @@ void adminMenu(bool fromCard = false)
   int subMenu = voiceMenu(9, 900, 900, false, false, 0, true); // 900- "Willkommen im Adminmenü,Wähle eine Funktion ...(mp3/ 900 - 909)
 
   // Aufbau des Voicemenüs
-  // int subMenu --> Rückgabewert der Nummer des subMenüs
+  // int subMenu              --> Rückgabewert der Nummer des subMenüs
   // = voiceMenu(
   // 9,    (numberOfOptions)  --> Anzahl der subMenüs 9
   // 900,  (startMessage)     --> Tracknummer der Ansage im mp3Ordner 0900
@@ -2578,8 +2660,8 @@ void adminMenu(bool fromCard = false)
   if (subMenu <= 5 || subMenu >= 7)  AdjVol = false;
 
 
-  // ************** Karte neu Konfiguriern ***********
-  if (subMenu == 1)                                           // 901- "Karte neu Konfigurieren
+  // ************** Karte neu Konfiguriern *************************
+  if (subMenu == 1)                                           // 901- "Karte neu Konfigurieren"
   {
     progmode = 1;                                             // Kartenart - Neue Karte
     if (AbbrActive == true)
@@ -2590,7 +2672,7 @@ void adminMenu(bool fromCard = false)
   }
 
   // ******* Einzelkarten für Ordner festlegen *********************
-  else if (subMenu == 2)                                      // 902- "Einzelkarten für Ordner festlegen
+  else if (subMenu == 2)                                      // 902- "Einzelkarten für Ordner festlegen"
   {
     progmode = 2;                                             // Kartenart - Einzelkarte
     if (AbbrActive == true)
@@ -2600,31 +2682,32 @@ void adminMenu(bool fromCard = false)
     tempCard.version = 1;
     tempCard.nfcFolderSettings.mode = 4;                      // Abspielmodus - Einzelmodus
 #ifdef CountFolders
-    tempCard.nfcFolderSettings.folder = voiceMenu(numFolders - 2, 301, 0, true); // Verwende die Vor/zurück-tasten um einen Ordner auszuwählen
+    tempCard.nfcFolderSettings.folder = voiceMenu(numFolders - 2, 301, 0, true); // 301- "Verwende die Vor/zurück-tasten um einen Ordner auszuwählen"
 #endif                                                                           // numFolders -2 -> Anzahl der ermittelten Ordner 
                                                                                  // abzueglich mp3 und advert Ordner
 
 #ifndef CountFolders
-    tempCard.nfcFolderSettings.folder = voiceMenu(99, 301, 0, true);             // Verwende die Vor/zurück-tasten um einen Ordner auszuwählen
+    tempCard.nfcFolderSettings.folder = voiceMenu(99, 301, 0, true);             // 301- "Verwende die Vor/zurück-tasten um einen Ordner auszuwählen"
 #endif                                                                           // 001 - 099 setzt die Ordnernummer Kurzer Druck + oder - 1
                                                                                  //                                  Langer Druck + oder - 10
     if (AbbrActive == true)
       return;
     
-    uint8_t special = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 321, 0,  // 321- "Startdatei auswählen
+    uint8_t special = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 321, 0,  // 321- "Startdatei auswählen"
                                 true, tempCard.nfcFolderSettings.folder);                            // setzt den Start-Track
     if (AbbrActive == true)
       return;
-    
-    uint8_t special2 = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 322, 0, // 322- "Enddatei auswählen
+    rolling = false;                                                                                 // vom letzten Track -> Track 1 gesperrt
+    uint8_t special2 = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 322, 0, // 322- "Enddatei auswählen"
                                  true, tempCard.nfcFolderSettings.folder, special);                  // setzt den End-Track
-
+StartTrack = special;
+    rolling = true;                                                                                  // letzten Track -> Track 1 entsperrt
     if (AbbrActive == true)
       return;
 
     mp3.playMp3FolderTrack(939);                // 939 - "OK, bitte lege nun nacheinander die Karten auf die Box.
                                                 //      Ich werde die jeweilige Nummer vorher ansagen, damit du nicht durcheinander kommst.
-                                                //      Zum Abbrechen einfach eine der Lautstärketasten drücken!
+                                                //      Zum Abbrechen einfach eine der Lautstärketasten drücken!"
 
     waitForTrackToFinish();
     for (uint8_t x = special; x <= special2; x++)
@@ -2650,7 +2733,7 @@ void adminMenu(bool fromCard = false)
           Serial.println(F("Abbruch!"));
 #endif
           AbbrActive = true;                                    // Abbruch ist aktiv
-          mp3.playMp3FolderTrack(802);                          // 802- "OK, ich habe den Vorgang abgebrochen.
+          mp3.playMp3FolderTrack(802);                          // 802- "OK, ich habe den Vorgang abgebrochen."
           waitForTrackToFinish();
           setstandbyTimer();
           return;
@@ -2671,8 +2754,8 @@ void adminMenu(bool fromCard = false)
     }
   }
 
-  // *********** Modifikationskarten erstellen *********************
-  else if (subMenu == 3)                                        // 903- "Modifikationskarte erstellen
+  // *********** Modifikationskarten erstellen ***********************
+  else if (subMenu == 3)                                        // 903- "Modifikationskarte erstellen"
   {
     progmode = 3;                                               // Kartenart - Modifikationskarte
     if (AbbrActive == true)
@@ -2779,11 +2862,11 @@ void adminMenu(bool fromCard = false)
     if (AbbrActive == true)
       return;
 
-#ifndef LastCard
+#ifndef LastCard                                              // wenn Letzte Karte auf PlayTaste legen nicht definiert
     setupFolder(&mySettings.shortCuts[shortcut - 1]);         // shortcuts 0 - 3 bzw. 0 - 4, Playtaste/Up-Lauter-Taste/Down-Leiser-Taste/WelcomeSound/(WeckerSound)
 #endif
 
-#ifdef LastCard
+#ifdef LastCard                                               // wenn Letzte Karte auf PlayTaste legen definiert
     setupFolder(&mySettings.shortCuts[shortcut]);             // shortcuts 1 - 3 bzw. 1 - 4, Up-Lauter-Taste/Down-Leiser-Taste/WelcomeSound/(WeckerSound)
 #endif                                                        // shortcut 0 , Playtaste wird mit last card belegt.
   }
@@ -2819,11 +2902,11 @@ void adminMenu(bool fromCard = false)
     if (AbbrActive == true)
       return;
 
-#ifndef LastCard
+#ifndef LastCard                                              // wenn Letzte Karte auf PlayTaste legen nicht definiert
     setupFolder(&mySettings.shortCuts[shortcut - 1]);         // shortcuts 0 - 3 bzw. 0 - 4, Playtaste/UpTaste/DownTaste/WelcomeSound/(WeckerSound)
 #endif
 
-#ifdef LastCard
+#ifdef LastCard                                               // wenn Letzte Karte auf PlayTaste legen definiert
     setupFolder(&mySettings.shortCuts[shortcut]);             // shortcuts 1 - 3 bzw. 1 - 4, UpTaste/DownTaste/WelcomeSound/(WeckerSound)
 #endif                                                        // shortcut 0 , Playtaste wird mit last card belegt.
   }
@@ -2857,11 +2940,11 @@ void adminMenu(bool fromCard = false)
     if (AbbrActive == true)
       return;
 
-#ifndef LastCard
+#ifndef LastCard                                              // wenn Letzte Karte auf PlayTaste legen nicht definiert
     setupFolder(&mySettings.shortCuts[shortcut - 1]);         // shortcuts 0 - 12 bzw. 0 - 13, Playtaste/Up-LauterTaste/Down-LeiserTaste
 #endif                                                        // Matrix A bis I/WelcomeSound/(WeckerSound)
 
-#ifdef LastCard
+#ifdef LastCard                                               // wenn Letzte Karte auf PlayTaste legen definiert
     setupFolder(&mySettings.shortCuts[shortcut]);             // shortcuts 1 - 12 bzw. 1 - 13, Up-LauterTaste/Down-LeiserTaste
 #endif                                                        // Matrix A bis I/WelcomeSound/(WeckerSound)
   }                                                           // shortcut 0 , Playtaste wird mit last card belegt.
@@ -2937,18 +3020,18 @@ void adminMenu(bool fromCard = false)
 
       // ********** Min Lautstärke des Lautsprechers *******************
 
-      if (LspMenu == 2)                                                         // 916 - Minimale Lautstärke Lautsprecher
+      if (LspMenu == 2)                                                       // 916 - Minimale Lautstärke Lautsprecher
       {
         if (AbbrActive == true)
         return;
         AdjVol = true;
-        mySettings.minVolume = voiceMenu(mySettings.maxVolume - 1, 934, 0,       // 934 - Bitte wähle mit den Vor/zurück-tasten die
-                                         false, false, mySettings.minVolume);    //      min. Lautstärke des Lautsprechers aus
+        mySettings.minVolume = voiceMenu(mySettings.maxVolume - 1, 934, 0,    // 934 - Bitte wähle mit den Vor/zurück-tasten die
+                                         false, false, mySettings.minVolume);  //      min. Lautstärke des Lautsprechers aus
       }
 
       // ********** Initial Lautstärke des Lautsprechers *******************
 
-      if (LspMenu == 3)                                                           // 917 - Lautstärke des Lautsprechers beim Start
+      if (LspMenu == 3)                                                       // 917 - Lautstärke des Lautsprechers beim Start
       {
         if (AbbrActive == true)
         return;
@@ -3000,7 +3083,7 @@ void adminMenu(bool fromCard = false)
 
       // ********** Initial Lautstärke Kopfhörer **************************
 
-      if (EarMenu == 3)                                                         // 921 - Lautstärke des Kopfhörers beim Start
+      if (EarMenu == 3)                                                           // 921 - Lautstärke des Kopfhörers beim Start
       {
         if (AbbrActive == true)
         return;
@@ -3052,17 +3135,17 @@ void adminMenu(bool fromCard = false)
   {
     if (AbbrActive == true)
     return;
-    int temp = voiceMenu(2, 980, 980, false);               // 980- "Wähle bitte aus ob und wie das Adminmenü geschützt werden soll.
+    int temp = voiceMenu(2, 980, 980, false);               // 980 - "Wähle bitte aus ob und wie das Adminmenü geschützt werden soll.
                                                             // 981 - kein Schutz
                                                             // 982 - Nur Adminkarte
 
 
-    if (temp == 1)                                          //Kein Schutz
+    if (temp == 1)                                          // 981 - Kein Schutz
     {
       mySettings.adminMenuLocked = 0;
     }
 
-    else if (temp == 2)                                     //Nur Adminkarte
+    else if (temp == 2)                                     // 982 - Nur Adminkarte
     {
       mySettings.adminMenuLocked = 1;
     }
@@ -3113,7 +3196,7 @@ void adminMenu(bool fromCard = false)
 #ifdef Konsole
       Serial.println(F("Shortcut konfiguriert"));
 #endif
-      mp3.playMp3FolderTrack(403);                            // 403- "OK.Shortcut konfiguriert"
+      mp3.playMp3FolderTrack(403);                            // 403 - "OK.Shortcut konfiguriert"
     }
     else if ( progmode != 9)                                  // aktiver Modus ist nicht Shortcut programmieren
                                                               // und nicht Adminkarte erstellen
@@ -3123,7 +3206,7 @@ void adminMenu(bool fromCard = false)
 #ifdef Konsole
       Serial.println(F("Änderungen gespeichert"));
 #endif
-      mp3.playMp3FolderTrack(998);                            // 998- "OK.Änderungen gespeichert"
+      mp3.playMp3FolderTrack(998);                            // 998 - "OK.Änderungen gespeichert"
     }
     waitForTrackToFinish();
 
@@ -3184,7 +3267,7 @@ uint8_t voiceMenu(int numberOfOptions,
 #ifdef Konsole
         Serial.println(F("TimeOut-Admin "));
 #endif
-        mp3.playMp3FolderTrack(803);                      // 803- Abbruch nach Timeout,Schalte aus
+        mp3.playMp3FolderTrack(803);                      // 803 - Abbruch nach Timeout,Schalte aus
         waitForTrackToFinish();
 
         ShutDown();
@@ -3210,7 +3293,7 @@ uint8_t voiceMenu(int numberOfOptions,
       Serial.println(F("man. Abbruch"));
 #endif
       AbbrActive = true;                          // Abbruch ist aktiv
-      mp3.playMp3FolderTrack(802);                // 802- "OK, ich habe den Vorgang abgebrochen.
+      mp3.playMp3FolderTrack(802);                // 802 - "OK, ich habe den Vorgang abgebrochen."
       waitForTrackToFinish();
       ignoreButtonOne = true;                     // PauseTaste übergehen
       setstandbyTimer();
@@ -3221,7 +3304,7 @@ uint8_t voiceMenu(int numberOfOptions,
     {
       if (returnValue != 0)
       {
-        AdmTimeOut = millis();                                        // Neustart TimeOut Timer
+        AdmTimeOut = millis();                     // Neustart TimeOut Timer
 #ifdef Konsole
         Serial.print(F("Auswahl "));
         Serial.print(returnValue);
@@ -3235,24 +3318,28 @@ uint8_t voiceMenu(int numberOfOptions,
     if (ButtonTwo.pressedFor(LONG_PRESS))
     {
       AdmTimeOut = millis();                                            // Neustart TimeOut Timer
-      if (returnValue == numberOfOptions)                               // Rücksprung zum Anfang der Optionen
+      if (rolling == true)                                              // wenn rolling erlaubt
+       {
+        if (returnValue == numberOfOptions)                             // Rücksprung zum Anfang der Optionen
         returnValue = 0;
+       }
       returnValue = min(returnValue + 10, numberOfOptions);             // 10 Schritte hoch
+
 #ifdef Konsole
-      if (AdjVol == false) Serial.println(returnValue);             // wenn nicht Lautstärkeeinstellung, Anzeige Rückgabewert
-      else Serial.println(messageOffset + returnValue);             // wenn Lautstärkeeinstellung, Anzeige Rückgabewert + Offset
+      if (AdjVol == false) Serial.println(returnValue);                 // wenn nicht Lautstärkeeinstellung, Anzeige Rückgabewert
+      else Serial.println(messageOffset + returnValue);                 // wenn Lautstärkeeinstellung, Anzeige Rückgabewert + Offset
 #endif
       mp3.pause();
 #ifndef Wecker
-      if (messageOffset + returnValue == 904)                            // Tauschen der Startmessage ohne Weckershortcut
+      if (messageOffset + returnValue == 904)                           // Tauschen der Startmessage ohne Weckershortcut
         mp3.playMp3FolderTrack(995);
       else
 #endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);              // Ansage Rückgabewert
+        mp3.playMp3FolderTrack(messageOffset + returnValue);             // Ansage Rückgabewert
       waitForTrackToFinish();
 
-      //************ preview *****************************
+      //************ Vorschau *****************************
 
       if (preview)
       {
@@ -3264,14 +3351,19 @@ uint8_t voiceMenu(int numberOfOptions,
 
       ignoreButtonTwo = true;                                     // Lautertaste übergehen
     }
+    // ************ Einzelschritt weiter ****************************
     else if (ButtonTwo.wasReleased())
     {
       AdmTimeOut = millis();                                      // Neustart TimeOut Timer
       if (!ignoreButtonTwo)
       {
+        if (rolling == true)                                      // wenn rolling erlaubt 
+       { 
         if (returnValue == numberOfOptions)                       // Rücksprung zum Anfang der Optionen
           returnValue = 0;
+       }
         returnValue = min(returnValue + 1, numberOfOptions);      // 1 Schritt weiter
+
 #ifdef Konsole
         Serial.print("Auswahl: ");
         if (AdjVol == false) Serial.println(returnValue);
@@ -3279,6 +3371,7 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
         mp3.pause();
 
+// ------------- Messages tauschen --------------------------
 #ifndef Wecker
         if (messageOffset + returnValue == 904)                    // Tauschen der Startmessage ohne Weckershortcut
           mp3.playMp3FolderTrack(995);
@@ -3314,10 +3407,19 @@ uint8_t voiceMenu(int numberOfOptions,
     if (ButtonThree.pressedFor(LONG_PRESS))
     {
       AdmTimeOut = millis();                                    // Neustart TimeOut Timer
-      if (returnValue == 1)                                     // Rücksprung zum Ende der Optionen
-        returnValue = (numberOfOptions + 1);
-      returnValue = max(returnValue - 10, 1);                   // 10 Schritte zurück
+      if (rolling == true)                                      // wenn rolling erlaubt 
+      {
+      if (returnValue == 1)                                     // Wenn von erster Option zurückgesprungen wird
+        returnValue = (numberOfOptions + 1);                    // Rücksprung an das Ende der Optionen
+      }
+      returnValue = max(returnValue - 10, 1);                   // 10 Schritte zurück innerhalb der möglichen Optionen
 
+      if (rolling == false)                                     // wenn rolling gesperrt   
+      {
+        if(returnValue < StartTrack)                            // wenn Rückgabewert für EndTrack kleiner als StartTrack
+        returnValue = StartTrack;                               // Rückgabewert auf zuletzt gespeicherten StartTrack setzen
+      }                                                         // Verhindert, dass bei der Erstellung der Spezialmodi
+                                                                // der EndTrack vor dem StartTrack liegen kann.
 #ifdef Konsole
       Serial.print("Auswahl: ");
       if (AdjVol == false) Serial.println(returnValue);         // Nr der Option
@@ -3331,10 +3433,10 @@ uint8_t voiceMenu(int numberOfOptions,
       else
 #endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);     // Vol-Wert
+        mp3.playMp3FolderTrack(messageOffset + returnValue);         // Vol-Wert
       waitForTrackToFinish();
 
-      //************ preview *****************************
+      //************ Vorschau *****************************
 
       if (preview)
       {
@@ -3347,14 +3449,27 @@ uint8_t voiceMenu(int numberOfOptions,
 
       ignoreButtonThree = true;                                     // LeiserTaste übergehen
     }
+    
+    // **************** Einzelschritt zurück *****************
     else if (ButtonThree.wasReleased())
     {
       AdmTimeOut = millis();                                        // Neustart TimeOut Timer
       if (!ignoreButtonThree)
       {
+      if (rolling == true)                                          // wenn rolling erlaubt
+        {
         if (returnValue == 1)                                       // Rücksprung zum Ende der Optionen
           returnValue = (numberOfOptions + 1);
+        }
         returnValue = max(returnValue - 1, 1);                      // 1 Schritt zurück
+
+       if (rolling == false)                                        // wenn rolling gesperrt   
+      {
+        if(returnValue < StartTrack)                                // wenn Rückgabewert für EndTrack kleiner als StartTrack
+        returnValue = StartTrack;                                   // Rückgabewert auf letzt gespeicherten StartTrack setzen
+      }                                                             // Verhindert, dass bei der Erstellung der Spezialmodi
+                                                                    // der EndTrack vor dem StartTrack liegen kann.
+
 #ifdef Konsole
         Serial.print("Auswahl: ");
         if (AdjVol == false) Serial.println(returnValue);           // Nr der Option
@@ -3362,7 +3477,8 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
         mp3.pause();
 
-#ifndef Buttonboard
+// ---------- Messages tauschen --------------------
+#ifndef Buttonboard                                                 // 3 und 5 Tastenversion
 #ifndef Wecker
         if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage ohne Weckershortcut
           mp3.playMp3FolderTrack(700);
@@ -3370,18 +3486,18 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
 #endif
 
-#ifdef FIVEBUTTON
+#ifdef FIVEBUTTON                                                   // 5 Tastenversion
         if (messageOffset + returnValue == 930)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
           mp3.playMp3FolderTrack(929);
           else
 #endif
-#ifdef Buttonboard
+#ifdef Buttonboard                                                  // Big Buttonboard und Wecker
 #ifdef Wecker
         if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
           mp3.playMp3FolderTrack(703);
           else
 #endif
-#ifndef Wecker
+#ifndef Wecker                                                      // Big Buttonboard ohne Wecker
         if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix ohne Weckershortcut
           mp3.playMp3FolderTrack(702);
          else
@@ -3440,7 +3556,7 @@ void resetCard()
     }
   }
 
-  while (!mfrc522.PICC_IsNewCardPresent());               // bleibe in der Schleife bis Karte aufgelegt
+  while (!mfrc522.PICC_IsNewCardPresent());                  // bleibe in der Schleife bis Karte aufgelegt
 
   if (!mfrc522.PICC_ReadCardSerial())
     return;
@@ -3454,11 +3570,11 @@ void resetCard()
 bool setupFolder(folderSettings * theFolder)
 {
   // Ordner abfragen
-#ifdef CountFolders
+#ifdef CountFolders                                                         // wenn CountFolders aktiv
   theFolder->folder = voiceMenu(numFolders - 2, 301, 0, true, 0, 0, true);  // 301 - Wähle den Ordner aus ( 1 bis numFolders-2)
 #endif
-#ifndef CountFolders
-  theFolder->folder = voiceMenu(99, 301, 0, true, 0, 0, true);          // 301 - Wähle den Ordner aus ( 1 - 99)
+#ifndef CountFolders                                                        // wenn CountFolders nicht aktiv
+  theFolder->folder = voiceMenu(99, 301, 0, true, 0, 0, true);              // 301 - Wähle den Ordner aus ( 1 - 99)
 #endif
   if (theFolder->folder == 0) return false;
 
@@ -3490,8 +3606,12 @@ bool setupFolder(folderSettings * theFolder)
   {
     theFolder->special = voiceMenu(mp3.getFolderTrackCount(theFolder->folder), 321, 0,
                                    true, theFolder->folder);                             // StartTrack
+    StartTrack = theFolder->special;                                                     // StartTrack zwischenspeichern um zu Verhindern
+                                                                                         // dass Endtrack vor Starttrack liegen kann.
+    rolling = false;                                                                     // vom letzten Track -> Track 1 gesperrt
     theFolder->special2 = voiceMenu(mp3.getFolderTrackCount(theFolder->folder), 322, 0,
                                     true, theFolder->folder, theFolder->special);        // EndTrack
+    rolling = true;                                                                      // vom letzten Track -> Track 1 entsperrt
   }
 
   // Admin Funktionen
@@ -3801,7 +3921,7 @@ void writeCard(nfcTagObject nfcTag)
   }
   else if (mifareType == MFRC522::PICC_TYPE_MIFARE_UL )
   {
-    byte pACK[] = {0, 0}; //16 bit PassWord ACK returned by the NFCtag
+    byte pACK[] = {0, 0};                                      //16 bit PassWord ACK returned by the NFCtag
 
     // Authenticate using key A
 #ifdef Konsole
@@ -3866,11 +3986,11 @@ void writeCard(nfcTagObject nfcTag)
     Serial.print(F("MIFARE_Write failed: "));
     Serial.println(mfrc522.GetStatusCodeName(status));
 #endif
-    mp3.playMp3FolderTrack(401);                        //401- "Oh weh! Das hat leider nicht geklappt!
+    mp3.playMp3FolderTrack(401);                        //401 - "Oh weh! Das hat leider nicht geklappt!
     waitForTrackToFinish();
   }
 
-  else                                                 // Status OK.
+  else                                                  // Status OK.
   {
 
     if (progmode == 1)
@@ -3878,7 +3998,7 @@ void writeCard(nfcTagObject nfcTag)
 #ifdef Konsole
       Serial.println(F("Konfiguration OK."));
 #endif
-      mp3.playMp3FolderTrack(400);                     //400- "OK. Ich habe die Karte oder den Shortcut konfiguriert.
+      mp3.playMp3FolderTrack(400);                      //400 - "OK. Ich habe die Karte oder den Shortcut konfiguriert.
     }
 
     if (progmode == 2)
@@ -3886,7 +4006,7 @@ void writeCard(nfcTagObject nfcTag)
 #ifdef Konsole
       Serial.println(F("Einzelkarte fertig"));
 #endif
-      mp3.playMp3FolderTrack(402);                        // 402- "OK. Karte fertig"
+      mp3.playMp3FolderTrack(402);                      // 402 - "OK. Karte fertig"
     }
 
     if (progmode == 3)
@@ -3894,7 +4014,7 @@ void writeCard(nfcTagObject nfcTag)
 #ifdef Konsole
       Serial.println(F("Modifikationskarte fertig"));
 #endif
-      mp3.playMp3FolderTrack(404);                        // 404- "OK. Modifikationskarte fertig"
+      mp3.playMp3FolderTrack(404);                     // 404 - "OK. Modifikationskarte fertig"
     }
 
     if (progmode == 9)
@@ -3902,7 +4022,7 @@ void writeCard(nfcTagObject nfcTag)
 #ifdef Konsole
       Serial.println(F("Adminkarte fertig"));
 #endif
-      mp3.playMp3FolderTrack(409);                        // 409- " Adminkarte erstellt"
+      mp3.playMp3FolderTrack(409);                     // 409 - " Adminkarte erstellt"
     }
   }
   waitForTrackToFinish();
@@ -3916,13 +4036,13 @@ void writeCard(nfcTagObject nfcTag)
 #ifdef Wecker
 void weckerstart()
 {
- ReadWecker = analogRead(WeckerPin);       // Weil Analogpin 6 und 7 nicht als Digitalpins verwendet werden können
+ ReadWecker = analogRead(WeckerPin);        // Weil Analogpin 6 und 7 nicht als Digitalpins verwendet werden können
                                             // muss ein Umweg über analogRead() gegangen werden.
 #ifndef AiO
-  if (ReadWecker >= 512)                      // wenn Analogwert WeckerPin > 2,5V (TonUINO Classik)
+  if (ReadWecker >= 512)                    // wenn Analogwert WeckerPin > 2,5V (TonUINO Classik)
 #endif
 #ifdef AiO
-  if (ReadWecker >= 1500)                     // wenn Analogwert WeckerPin > 1,6V (AiO )
+  if (ReadWecker >= 1500)                   // wenn Analogwert WeckerPin > 1,6V (AiO )
 #endif
   {
     WeckerStart = true;
@@ -3970,8 +4090,6 @@ void wecker()
       setstandbyTimer();
     }
   }
-
-
 }
 #endif
 
@@ -3991,10 +4109,10 @@ void Earphone ()
       WeckerPlay = false;                       // Marker Weckershortcut wird gespielt-zurücksetzen
     }
   }
-  if (WeckerPlay == false)                       // Weckershortcut wird nicht gespielt
+  if (WeckerPlay == false)                      // Weckershortcut wird nicht gespielt
   {
 #endif
-    Ear = digitalRead(EarPhonePin);              // Auslesen Status EarPhonePin
+    Ear = digitalRead(EarPhonePin);             // Auslesen Status EarPhonePin
 
 #ifndef KHSensLOW
     if (Ear == HIGH)                            // Wenn Kopfhörer eingesteckt HIGH-Aktiv
@@ -4014,7 +4132,7 @@ void Earphone ()
       else
       {
         if (SpkisOn == false)
-          SpkOn();                                 // Lautsprecher Einschalten
+          SpkOn();                              // Lautsprecher Einschalten
       }
   }
 #ifdef Wecker
@@ -4023,7 +4141,7 @@ void Earphone ()
 #endif
 
 
-// ************************** Lautsprecher über Software an und Ausschalten ***************
+// ************************** Lautsprecher über Software an und ausschalten ***************
 #ifdef SpkOnOff
 
 // **************************Speaker On *******************
@@ -4061,7 +4179,6 @@ void SpkOn()
 #endif
   SpkisOn = true;                                             // Marker setzen-Lautsprecher EIN
 }
-
 
 // **************************Speaker Off *******************
 
@@ -4112,7 +4229,6 @@ void SpkOff()
 
 #endif
 
-
 // ******************** LED-Animation ****************************
 #ifdef LED_SR
 
@@ -4153,8 +4269,8 @@ void LED_Animation()
       && (ButtonTwo.isReleased())
       && (ButtonThree.isReleased()))
   {
-    lsrSwitch = false ;                 // Marker Tasten gedrückt rücksetzen
-    lsrEnable = true ;                  // Animation aktivieren
+    lsrSwitch = false ;                  // Marker Tasten gedrückt rücksetzen
+    lsrEnable = true ;                   // Animation aktivieren
 #ifdef Konsole
     Serial.println(F("aktiviert"));
 #endif
@@ -4204,7 +4320,7 @@ void LED_Animation()
     currentDetectedTrack = currentQueueIndex;
     if (currentDetectedTrack != lastDetectedTrack)
     {
-      strip.clear();   // über schwarz oder über die vorherige Animation
+      strip.clear();                                              // über schwarz oder über die vorherige Animation
       if (currentQueueIndex > lastDetectedTrack) //nächstes Lied
       {
         lsrAnimationTrackMode = 1;
@@ -4387,12 +4503,14 @@ void LED_Animation()
 #endif                           // Ende Abfrage Aktivierung LED Animation (#ifdef LED_SR)
  
 // *************************** Ende LED Animation ******************************************
+
+// *************************** Fehlerbehandlung des Df-Players *****************************
   void mp3Error()
   {
-  if (mp3error == true)
+  if (mp3error == true)                         // bei Vorliegen eines Fehlercodes vom Df-Player
     {
-     if (StdBy == false) setstandbyTimer();
-      #ifdef LED_SR      
+     if (StdBy == false) setstandbyTimer();     // Standbytimer starten
+      #ifdef LED_SR                             // Blinksignal 5 x Magenta
       strip.fill(magenta);
       strip.show();
       delay(1000);
@@ -4402,9 +4520,9 @@ void LED_Animation()
       Zhl = Zhl-1;
       if(Zhl == 0)
       {
-        mp3error = false;
+        mp3error = false;                     // Rücksetzen Marker mp3error
         Zhl = 5;
-        if (!isPlaying()) nextTrack(_lastTrackFinished + 1);
+        if (!isPlaying()) nextTrack(_lastTrackFinished + 1); // Ist wiedergabe gestoppt -> Wechsel zum nächsten Track
       }
      #endif 
     }
@@ -4538,7 +4656,7 @@ if(TaGedr == false)
 }
 #endif
 
-// *****************************************************************************************
+// =========================================================================================
 // *****************************************************************************************
 //                           SETUP
 // *****************************************************************************************
@@ -4555,7 +4673,7 @@ void setup()
 #ifdef AiO
   Serial.println(F("** TONUINO - AiO **"));
 #endif
-  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-04-22 **"));
+  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-11-07 **"));
   Serial.println();
 #ifndef AiO
   Serial.println(F("Based on TonUINO V.2.1"));
@@ -4568,10 +4686,10 @@ void setup()
   // ------------------------------------------------------------------------------------
 #ifndef Buttonboard
  #ifndef FIVEBUTTONS
-  Serial.println(F("*** 3 Tasten ***")); // 3-Tastenversion
+  Serial.println(F("*** 3 Tasten ***"));  // 3-Tastenversion
  #endif
  #ifdef FIVEBUTTONS
-  Serial.println(F("*** 5 Tasten ***")); // 5-Tastenversion
+  Serial.println(F("*** 5 Tasten ***"));  // 5-Tastenversion
  #endif
 #endif
 #ifdef Buttonboard
@@ -4579,29 +4697,28 @@ void setup()
 #endif 
   Serial.println(" ");
   // ------------------------------------------------------------------------------------
-  pinMode(BusyPin, INPUT);              // Eingang Busy-Signal vom DF-Player
-  pinMode(ButtonPause, INPUT_PULLUP);   // Eingang Pausetaste
-  pinMode(ButtonUp, INPUT_PULLUP);      // Eingang Uptaste
-  pinMode(ButtonDown, INPUT_PULLUP);    // Eingang Downtaste
+  pinMode(BusyPin, INPUT);                // Eingang Busy-Signal vom DF-Player
+  pinMode(ButtonPause, INPUT_PULLUP);     // Eingang Pausetaste
+  pinMode(ButtonUp, INPUT_PULLUP);        // Eingang Uptaste
+  pinMode(ButtonDown, INPUT_PULLUP);      // Eingang Downtaste
 #ifdef FIVEBUTTONS
-  pinMode(ButtonFourPin, INPUT_PULLUP); // Eingang Taste 4
-  pinMode(ButtonFivePin, INPUT_PULLUP); // Eingang Taste 5
+  pinMode(ButtonFourPin, INPUT_PULLUP);   // Eingang Taste 4
+  pinMode(ButtonFivePin, INPUT_PULLUP);   // Eingang Taste 5
 #endif
 #ifdef Buttonboard
-  pinMode(Buttonmatrix, INPUT);         // Eingang Tastenmatrix 9-Tasten (A-I)
+  pinMode(Buttonmatrix, INPUT);           // Eingang Tastenmatrix 9-Tasten (A-I)
   //------------------------------------------------------------------------------------
   #ifdef AiO
-   #ifndef BattControl
-   analogReference(INTERNAL2V048);       // Festlegung der Referenz
-   analogReadResolution(12);             // Auflösung Auslesen
+   #ifndef BatteryCheck
+   analogReference(INTERNAL2V048);        // Festlegung der Referenz
+   analogReadResolution(12);              // Auflösung Auslesen
    #endif
   #endif
 
 #endif 
-
   // ------------------------------------------------------------------------------------
-#ifdef BattControl
-  pinMode(VControlPin, INPUT);          // Eingang Batteriespannungskontrolle
+#ifdef BatteryCheck
+  pinMode(BatteryCheckPin, INPUT);      // Eingang Batteriespannungskontrolle
  #ifdef AiO
   analogReference(INTERNAL2V048);       // Festlegung der Referenz
   analogReadResolution(12);             // Auflösung Auslesen
@@ -4664,6 +4781,10 @@ void setup()
   randomSeed(ADCSeed);                   // Zufallsgenerator initialisieren
   // ----------------------------------------------------------------------------------------
   // *************** Settings aus EEPROM laden **und Prüfung auf geänderte Struktur durch #defines ***********
+  //     Bei Änderungen in den #defines die eine Änderung der Speicherstruktur im EEPROM bewirken, wird durch 
+  //     Änderung des Wertes von myCokie ein automatischer Reset von mySettings erzwungen, 
+  //     um die Speicherstruktur an die neue Konfiguration anzupassen.
+   
   #ifdef EarPhone
 myCookie = myCookie +1;                // setzt myCookie um 1 hoch (Settings um KH-Einstellungen erweitert)
 #endif                                          
@@ -4689,12 +4810,10 @@ myCookie = myCookie +4;                // setzt myCookie um 4 hoch (9 Zusätzlic
   strip.fill(lightblue);
   strip.show();
  
-  
   loopCount = 0;
   animCount = 1;
   lastDetectedTrack = 0;
 #endif
-
 
   // ---------------------------------------------------------------------------------------
   //*************** DFPlayer Mini initialisieren *******************************************
@@ -4711,7 +4830,7 @@ myCookie = myCookie +4;                // setzt myCookie um 4 hoch (9 Zusätzlic
 #ifdef CountFolders
   numFolders = (mp3.getTotalFolderCount( ));  // Ordner zählen
 #ifdef IgnoreWinSysInf
-  numFolders = numFolders - 1;                // Der Windows Ordner System Volume Information wird ignoriert
+  numFolders = numFolders - 1;                // Der Windows Ordner SystemVolumeInformation wird von der Ordnerzahl abgezogen
 #endif
   Serial.print("Ordner auf SD: ");
   Serial.println (numFolders);
@@ -4842,7 +4961,6 @@ delay(1000);
    playShortCut(Welcome);
 #endif
 
-
   // ------------------------------------------------------------------------------------
   // *************** Freigabe oder Unterdrückung Konsolenausgabe **************************
 #ifndef Konsole
@@ -4856,7 +4974,7 @@ delay(1000);
 // ****************** Ende Setup ************************************************
 // ******************************************************************************
 
-
+// ===============================================================================
 // *******************************************************************************
 //                            MAIN-LOOP
 // *******************************************************************************
@@ -4868,9 +4986,8 @@ void loop()
 ReadMatrix();
 #endif
 
-    
     // ********************* Intervallmäßiges Prüfen der Batteriespannung ***********************
-#ifdef BattControl
+#ifdef BatteryCheck
 
     Now = millis();                           // auslesen aktueller Zeitpunkt
     if (Now - lastTest >= TestIntervall)
@@ -4896,7 +5013,7 @@ ReadMatrix();
     // *********************** LED Animation ** Hardwareerweiterung erforderlich ******************
 #ifdef LED_SR
    
-   // --------- LED-Signalisation MP3-Error --------------
+    // --------- LED-Signalisation MP3-Error --------------
     mp3Error();                                // Bei einem mp3 Error 5 x Blinksignal Magenta
      
     LED_Animation();                           // Standart-LED-Animation
@@ -4940,7 +5057,7 @@ ReadMatrix();
     }
 
     // ******************* Taste 1 (Play/Pause Taste) ****************************************************
-
+    // ------------- ShortPress --------------------------------
     if (ButtonOne.wasReleased())                                // wenn Play/Pausetaste gedrückt wurde
     {
        mp3error = false;                                        // Rücksetzen Marker mp3error
@@ -4948,7 +5065,7 @@ ReadMatrix();
       if (activeModifier != NULL)                               // wenn Modifikation aktiv
         if (activeModifier->handlePause() == true)              // wenn akt.Modifikation pause Taste sperrt
           return;                                               // Abbrechen
-      if (ignoreButtonOne == false)                             // Wenn Taste gelesen
+      if (ignoreButtonOne == false)                             // Wenn Taste ausgewertet wird
         if (isPlaying())                                        // wenn Wiedergabe
         {
           mp3.pause();                                          // Pause der Wiedergabe
@@ -4961,6 +5078,7 @@ ReadMatrix();
         }
       ignoreButtonOne = false;                                  // Pausetaste auswerten
     }
+// ---------------- LongPress -------------------------------------
     else if (ButtonOne.pressedFor(LONG_PRESS)
              && ignoreButtonOne == false)                       // Langer Druck Pausetaste für Ansage des aktuellen Tracks
     {
@@ -4999,7 +5117,7 @@ ReadMatrix();
         }
 #endif
       //************** Ende, Rücksetzen - Hörbuch auf Anfang ***********************
-        else                                                    // alle anderen Abspielmodi
+        else                                                    // alle anderen Abspielmodi außer Hörbuch
         {
           mp3.playAdvertisement(advertTrack);                   // Tracknummer ansagen
         }
@@ -5013,7 +5131,7 @@ ReadMatrix();
     // *********** Ende Taste 1 (Play/Pausetaste) *************************************************
 
     // *************** Taste 2  (Vor/Vol +) *******************************************************
-    
+    // ---------------- LongPress -------------------------------------
 #ifdef LED_SR_Switch
     if (ButtonTwo.pressedFor(LONG_PRESS) && lsrSwitch == false)
 #endif
@@ -5021,6 +5139,7 @@ ReadMatrix();
     if (ButtonTwo.pressedFor(LONG_PRESS))       // Wenn Taste2 lange gedrückt
 #endif    
   {
+   
       if (isPlaying())                          // wenn Wiedergabe läuft
       {
         if (!mySettings.invertVolumeButtons)    // wenn Funktion der Vol-Tasten nicht getauscht
@@ -5030,64 +5149,73 @@ ReadMatrix();
          }
          else                                   // wenn Funktion der Vol-Tasten getauscht
          {                                       
+           #ifndef FIVEBUTTONS                  // 3 Tastenmodus und Buttonboard
            nextButton();                        // weiter Taste longpress im 3 Tastenmodus
+           #endif
+           #ifdef FIVEBUTTONS                   // 5 Tastenmodus
+           JumpForw();                          // Titelsprung longpress im 5 Tastenmodus
+           #endif
          }
       }
-     else                                      // wenn keine Wiedergabe läuft
-      {
-      if (mySettings.invertVolumeButtons)      // wenn Funktion der Vol-Tasten getauscht
-        {  
-        #ifndef FIVEBUTTONS
-        playShortCut(NextLauterButton);        // Shortcut spielen Vor/Lauter-Taste
+    else                                        // wenn keine Wiedergabe läuft
+     {                                          // Aufrufen der Shortcuts
+       if (mySettings.invertVolumeButtons)      // wenn Funktion der Vol-Tasten getauscht
+        {
+        #ifndef FIVEBUTTONS                     // 3 Tastenmodus
+         playShortCut(NextLauterButton);        // Shortcut spielen Vor/Lauter-Taste
         #endif
         #ifdef FIVEBUTTONS
-        playShortCut(NextButton);              // Shortcut spielen Weiter-Taste
+         playShortCut(NextButton);              // Shortcut spielen Weiter-Taste
         #endif
         }
         else                                   // wenn Funktion der Vol-Tasten nicht getauscht
         {
-        #ifndef FIVEBUTTONS                    // 3 Tasten und Matrix
+        #ifndef FIVEBUTTONS                    // 3 Tastenmodus und Buttonboard
         playShortCut(NextLauterButton);        // Shortcut spielen Vor/Lauter-Taste
         #endif
-        #ifdef FIVEBUTTONS                     // 5 Tasten
+        #ifdef FIVEBUTTONS                     // 5 Tastenmodus
         playShortCut(LauterButton);            // Shortcut spielen Lauter-Taste
         #endif
         }
-      }
-      ignoreButtonTwo = true;                   // Taste2 übergehen
-//#endif    // DreiTasten
+       }
+     
+      ignoreButtonTwo = true;                   // Taste2 nach loslassen übergehen
+
     }                                           // Ende longPress
-    
-    else if (ButtonTwo.wasReleased())           // wenn Taste nur kurz gedrückt wurde (shortpress)
+    // ---------------- ShortPress -------------------------------------    
+    else if (ButtonTwo.wasReleased())           // wenn kein longpress und Taste nur kurz gedrückt wurde (shortpress)
     {
       if (!ignoreButtonTwo)                     // Wenn Taste gelesen werden soll
        {
         if (!mySettings.invertVolumeButtons)    // wenn Funktion der Vol Tasten nicht getauscht
         {
- #ifndef FIVEBUTTONS       
-         nextButton();                         // weiter Taste im 3 Tastenmodus durch kurzen Tastendruck
+ #ifndef FIVEBUTTONS                            // 3 Tastenmodus und Buttonboard
+          nextButton();                         // weiter Taste im 3 Tastenmodus durch kurzen Tastendruck
  #endif
- #ifdef FIVEBUTTONS       
-         volumeUpButton();                     // Lauter Taste
-         longPressVol = false;                 // schrittweise VolÄnderung durch kurzen Tastendruck
+ #ifdef FIVEBUTTONS                             // 5 Tastenmodus
+         volumeUpButton();                      // Lauter Taste
+         longPressVol = false;                  // schrittweise VolÄnderung durch kurzen Tastendruck
  #endif       
         }
-        else                                   // wenn Funktion der Vol Tasten getauscht
+        else                                    // wenn Funktion der Vol Tasten getauscht
         {
  #ifndef FIVEBUTTONS       
-         volumeUpButton();                     // Lauter Taste im 3 Tasenmodus
-         longPressVol = false;                 // schrittweise VolÄnderung durch kurzen Tastendruck
+         volumeUpButton();                      // Lauter Taste im 3 Tasenmodus
+         longPressVol = false;                  // schrittweise VolÄnderung durch kurzen Tastendruck
   #endif
   #ifdef FIVEBUTTONS       
-         nextButton();                         // weiter Taste im 5 Tastenmodus durch kurzen Tastendruck
+         nextButton();                          // weiter Taste im 5 Tastenmodus durch kurzen Tastendruck
+ 
  #endif
         }
        }
       ignoreButtonTwo = false;                  // Taste2 wieder auswerten
+    
     }                                           // ende shortpress
     // *********** Ende Taste 2  (Vor/Vol +)  ********************************************
 
     // *************** Taste3 (Zurück/Vol -)  *********************************************
+    // ---------------- LongPress -------------------------------------
 #ifdef LED_SR_Switch
     if (ButtonThree.pressedFor(LONG_PRESS) && lsrSwitch == false)
 #endif
@@ -5095,7 +5223,6 @@ ReadMatrix();
     if (ButtonThree.pressedFor(LONG_PRESS))
 #endif    
    {
-
      if (isPlaying())                                   // Bei laufender Wiedergabe
      {
         if (!mySettings.invertVolumeButtons)            // wenn Funktion der Vol-Tasten nicht getauscht
@@ -5105,11 +5232,16 @@ ReadMatrix();
         }
         else                                            // wenn Funktion der Vol-Tasten getauscht
         {
-         previousButton();                              // Taste Track zurück 3 Tastenmodus durch longpress
+        #ifndef FIVEBUTTONS
+         previousButton();                              // Track zurück 3 Tastenmodus durch longpress
+        #endif
+        #ifdef FIVEBUTTONS
+         JumpBackw();                                   // Sprung rückwärts 5 Tastenmodus durch longpress
+        #endif
         }
      }
      else                                               // wenn keine Wiedergabe läuft
-     {
+       {
         if (mySettings.invertVolumeButtons)             // wenn Funktion der Vol-Tasten getauscht
         {
         #ifndef FIVEBUTTONS
@@ -5118,7 +5250,7 @@ ReadMatrix();
         #ifdef FIVEBUTTONS
         playShortCut(PrevButton);                       // Shortcut spielen Zurück-Taste
         #endif
-        }
+       }
         else                                            // wenn Funktion der Vol-Tasten nicht getauscht
        {
         #ifndef FIVEBUTTONS                             // 3 Tasten und Matrix
@@ -5127,12 +5259,12 @@ ReadMatrix();
         #ifdef FIVEBUTTONS                              // 5 Tasten
         playShortCut(LeiserButton);                     // Shortcut spielen Leiser-Taste
         #endif
-       }      
-     }
+       }
+      }
       ignoreButtonThree = true;                         // Taste3 übergehen
-//#endif    // Ende Dreitasten
+
    }                                                    // Ende longpress
-    
+    // ---------------- ShortPress -------------------------------------        
     else if (ButtonThree.wasReleased())                 // Wenn Taste3 betätigt wurde (shortpress)
     {
       mp3error = false;                                 // Rücksetzen Marker mp3error
@@ -5168,7 +5300,7 @@ ReadMatrix();
 #ifdef FIVEBUTTONS                              // 5 Tasten-Modus
 
     // ************ Taste 4 (Vol+/Vor)**************************************
-
+    // ---------------- LongPress -------------------------------------
     if (ButtonFour.pressedFor(LONG_PRESS))
    
     {
@@ -5181,9 +5313,8 @@ ReadMatrix();
         }
        else                                     // wenn Funktion der Vol-Tasten nicht getauscht
         {                                       
-          nextButton();                         // weiter Taste
+           JumpForw();                          // Titelsprung Vorwärts bei longpress im 5 Tastenmodus
         }
-       
       }
       else                                      // wenn keine Wiedergabe
       {
@@ -5203,7 +5334,7 @@ ReadMatrix();
       ignoreButtonFour = true;                  // Taste4 übergehen
 
     }                                           // Ende longPress
-        
+    // ---------------- ShortPress -------------------------------------            
     else if (ButtonFour.wasReleased())          // wenn Taste4  betätigt wurde (shortpress)
     {
       if (isPlaying())                          // wenn Wiedergabe läuft
@@ -5223,7 +5354,7 @@ ReadMatrix();
     }                                           // Ende shortpress
 
     // ************ Taste 5 (Vol-/Zurück)************************************
-    
+    // ---------------- LongPress -------------------------------------    
    if (ButtonFive.pressedFor(LONG_PRESS))
    
     {
@@ -5236,7 +5367,7 @@ ReadMatrix();
         }
         else                                    // wenn Funktion der Vol-Tasten nicht getauscht
         {                                       
-          previousButton();                     // zurück Taste
+          JumpBackw();                          // Sprung rückwärts 5 Tastenmodus durch longpress
         }
       }
       else                                      // wenn keine Wiedergabe
@@ -5255,7 +5386,7 @@ ReadMatrix();
         }
       }
       ignoreButtonFive = true;                  // Leiser Taste übergehen
-
+    // ---------------- ShortPress -------------------------------------    
     }                                           // Ende longPress   
     else if (ButtonFive.wasReleased())          // Taste wurde betätigt (shortpress)
     {
@@ -5315,7 +5446,7 @@ ReadMatrix();
 // ************ Main LOOP ENDE *************************************************
 // *****************************************************************************
 
-// *****************************************************************************
+// =============================================================================
 // ***************** Hilfsroutinen *********************************************
 
 ////////////////////// Dump Byte Array /////////////////////////////////////////
@@ -5379,12 +5510,15 @@ template <class T> void EEPROM_update(int ee, const T& value)
       Die 9 Tasten werden über das Adminmenü mit Shortcuts belegt.
     - Bei Ausgabe eines Fehlers des Df-Players wird ein Magenta Blinksignal der LED-Animation                                      - (AiO und TonUINO Classic)
       aktiviert, unabhängig ob die LED-Anim eingeschaltet oder ausgeschaltet ist. Quittierung
-      über langen Druck einer beliebigen Taste. Der Standbytimer wird aktiviert zum Abschalten
-      wenn keine Quittierung erfolgt.
-    - LED Animation umgestaltet nach @atomphil                                                                                     - (AiO und TonUINO Classic)
+      über Druck der Play/Pause-Taste. Kann der Df-Player den nächst folgenden Track der Queue abspielen,
+      wird dieser abgespielt und der Fehler zurückgesetzt. 
+      Ist keine weitere Wiedergabe möglich wird der Standbytimer aktiviert zum Ausschalten.
+    - LED Animation umgestaltet nach @atomphil. Weichere und fließendere Animation.                                                - (AiO und TonUINO Classic)
     - 5 Tastenfunktion Shortpress und Longpress für alle Tasten. Shortcuts für alle Tasten.                                        - (AiO und TonUINO Classic) 
         Vol-Tasten - Shortpress schrittweise Vol-Änderung, Longpress continuirliche Vol-änderung.   
-        Vor-Zurück Tasten - Shortpress -> 1 Titel vor oder zurück,Longpress -> Mehrere Titel vor oder zurück.
+        Vor-Zurück Tasten - Shortpress -> 1 Titel vor oder zurück,Longpress -> Sprung mehrerer Titel vor oder zurück.
+        Die Anzahl der zu überspringenden Titel ist in den defines voreinstellbar. 
+        Titel der einzelnen Sprünge werden kurz angespielt.
     - Manuelle Abbrüche im Adminmenü überarbeitet, zum sauberen Ausstieg aus allen Untermenüs.                                      - (AiO und TonUINO Classic)
     - Änderung der Geschwindigkeit der Lautstärkeeinstellung über longPress der Laustärketasten                                     - (AiO und TonUINO Classic)
       Die Veränderung der Geschw erfolgt nicht mehr über ein delay, sondern über einen Counter.
@@ -5441,12 +5575,13 @@ template <class T> void EEPROM_update(int ee, const T& value)
       in der Konsole frei zu machen. (Ersparnis ca 20% Programmspeicher)
 
     ************** Bug Fixes **********************************************************
-    - Fix, Bei Track zurück um 1 wird der dem track folgende Rest der Queue abgespielt und bleibt nicht mehr stehen.
+    - Fix, Beim Erstellen von Karten und Shortcuts in den Spezialmodi von-bis, kann der EndTrack nicht mehr vor dem StartTrack programmiert werden.
+    - Fix, Bei Track zurück um 1, wird der dem Track folgende Rest der Queue abgespielt und bleibt nicht mehr stehen.
     - Fix, Letzte Karte auf Playtaste legen, alle Modi Spezial-von-bis, Start und Endtrack werden jetzt richtig gespeichert
     - Fix, Bei Schutz des Adminmenüs NUR MIT KARTE hängt sich der Tonuino nicht mehr bei 3 Tastendruck auf
     - Fix, ModKarte repeat single track. Rücktaste jetzt auch gesperrt.
     - Fix, ModKarte repeat single track. Im Partymodus wird jetzt der richtige aktuelle Titel abgespielt.
-    - Fix, Spezialmodus Von-Bis-Album, Vor- Rücktasten bleiben jetzt im definierten Ordnerbereich.
+    - Fix, Wiedergabe Spezialmodus Von-Bis-Album, Vor- Rücktasten bleiben jetzt im definierten Ordnerbereich.
     - Fix, Reset beim Einschalten. TonUINO auf default-Werte rücksetzen funktioniert jetzt.
     - Fix, Standby-Timer wird jetzt auch bei manuellem Abbruch des Adminmenüs gestartet.
     - Fix, Bei nicht beendetem Adminmenü wird nach 2 min Inaktivität (TimeOut) das Adminmenü automatisch beendet
@@ -5455,13 +5590,15 @@ template <class T> void EEPROM_update(int ee, const T& value)
 
     ************* Änderungen im Adminmenü *********************************************************
 
-     - Das Durchschalten der Optionen erfolgt jetzt umlaufend. Vorwärts und auch rückwärts
+     - Das Durchschalten der Optionen erfolgt jetzt umlaufend. Vorwärts und auch rückwärts (rolling)
+     - Bei der Erstellung von Karten und Shortcuts in den Spezialmodi von-bis ist das rolling beim EndTrack gesperrt.
      - Die Reihenfolge der Menüpunkte wurde verändert.
      - Die Menüstruktur wurde verändert und mehrere Untermenüs hinzugefügt.
      - Bei der Abfrage ob die Funktion der LS-Tsten umgedreht werden soll, erfolgt der Wechsel immer wenn JA gewählt wird.
      - Die Presets für die Lautstärke wurden um Presets für den Kopfhörer erweitert.
      - Die Einstellungen für den EQ wurden in das Untermenü der Lautstärkeeinstellungen integriert.
      - Bei der Configuration der Shortcuts wurde das Voicemenü an die Option mit oder ohne Wecker angepasst.
+     - Bei Nutzung des 12 Buttonboards wurde die Konfiguration der 9 zusätzlichen Shortcuts ins Adminmenü integriert.
      - Wenn die Funktion LastCard genutzt wird, ist die Konfiguration des Shortcuts 0 (PlayTaste) ausgeblendet.
      - Im Adminmenü läuft eine Timeoutfunktion, die nach 2 Minuten Inaktivität das Adminmenü beendet und
        den Tonuino ausschaltet. Das Timeout funktioniert jetzt auch wenn auf das Auflegen einer Karte gewartet wird.
