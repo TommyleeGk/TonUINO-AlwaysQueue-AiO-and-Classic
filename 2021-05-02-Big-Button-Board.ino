@@ -2695,12 +2695,13 @@ void adminMenu(bool fromCard = false)
     
     uint8_t special = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 321, 0,  // 321- "Startdatei auswählen"
                                 true, tempCard.nfcFolderSettings.folder);                            // setzt den Start-Track
-    if (AbbrActive == true)
+      StartTrack = special;                                                                          // zwischenspeichern StartTrack
+     if (AbbrActive == true)
       return;
     rolling = false;                                                                                 // vom letzten Track -> Track 1 gesperrt
     uint8_t special2 = voiceMenu(mp3.getFolderTrackCount(tempCard.nfcFolderSettings.folder), 322, 0, // 322- "Enddatei auswählen"
                                  true, tempCard.nfcFolderSettings.folder, special);                  // setzt den End-Track
-StartTrack = special;
+
     rolling = true;                                                                                  // letzten Track -> Track 1 entsperrt
     if (AbbrActive == true)
       return;
