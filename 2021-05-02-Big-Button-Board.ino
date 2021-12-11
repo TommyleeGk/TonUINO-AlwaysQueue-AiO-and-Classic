@@ -14,7 +14,7 @@
 
       Version Thomas Lehnert
 
-      letzte Änderung 2021-11-07
+      letzte Änderung 2021-12-11
    
 
     - Über #define wird ausgewählt, ob die Software auf dem AiO - Board,
@@ -2958,10 +2958,13 @@ void adminMenu(bool fromCard = false)
   {
   if (AbbrActive == true)
       return;
-      
+  #ifdef FIVEBUTTONS    
     int temp = voiceMenu(2, 930, 930, false);                       //930- "Möchtest du die Vor/Zurücktasten mit den  Lautstärketasten tauschen?
-                                                                    //Du musst dann die Tasten lange drücken um ein Lied vor oder zurückzugehen.
-    
+  #endif                                                                  
+  #ifndef FIVEBUTTONS    
+    int temp = voiceMenu(2, 929, 930, false);                       //930- "Möchtest du die Funktionen von Shortpress und Longpress der LS/V Z  Tasten tauschen?
+  #endif                                                                  //Du musst dann die Tasten lange drücken um ein Lied vor oder zurückzugehen. 
+     
     if (temp == 1)                                                  //931- "Ja
     {                                                               // Tasten tauschen
       if(mySettings.invertVolumeButtons == false)                   
@@ -3487,11 +3490,6 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
 #endif
 
-#ifdef FIVEBUTTON                                                   // 5 Tastenversion
-        if (messageOffset + returnValue == 930)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
-          mp3.playMp3FolderTrack(929);
-          else
-#endif
 #ifdef Buttonboard                                                  // Big Buttonboard und Wecker
 #ifdef Wecker
         if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
