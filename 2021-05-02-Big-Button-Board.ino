@@ -4672,7 +4672,7 @@ void setup()
 #ifdef AiO
   Serial.println(F("** TONUINO - AiO **"));
 #endif
-  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-11-07 **"));
+  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-12-11 **"));
   Serial.println();
 #ifndef AiO
   Serial.println(F("Based on TonUINO V.2.1"));
