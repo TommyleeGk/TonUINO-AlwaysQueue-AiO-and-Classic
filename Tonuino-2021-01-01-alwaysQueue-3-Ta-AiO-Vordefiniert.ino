@@ -14,7 +14,7 @@
 
       Version Thomas Lehnert
 
-      letzte Änderung 2021-12-11
+      letzte Änderung 2021-12-13
    
 
     - Über #define wird ausgewählt, ob die Software auf dem AiO - Board,
@@ -3334,13 +3334,8 @@ uint8_t voiceMenu(int numberOfOptions,
       else Serial.println(messageOffset + returnValue);                 // wenn Lautstärkeeinstellung, Anzeige Rückgabewert + Offset
 #endif
       mp3.pause();
-#ifndef Wecker
-      if (messageOffset + returnValue == 904)                           // Tauschen der Startmessage ohne Weckershortcut
-        mp3.playMp3FolderTrack(995);
-      else
-#endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);             // Ansage Rückgabewert
+      mp3.playMp3FolderTrack(messageOffset + returnValue);             // Ansage Rückgabewert
       waitForTrackToFinish();
 
       //************ Vorschau *****************************
@@ -3375,18 +3370,36 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
         mp3.pause();
 
-// ------------- Messages tauschen --------------------------
+// ---------- Messages tauschen --------------------
+#ifndef Buttonboard                                                 // 3 und 5 Tastenversion
 #ifndef Wecker
-        if (messageOffset + returnValue == 904)                    // Tauschen der Startmessage ohne Weckershortcut
-          mp3.playMp3FolderTrack(995);
+        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(700);                              // 700 Den Shortcut für eine Taste oder den Startsound programmieren
         else
 #endif
+#endif
+
+#ifdef Buttonboard                                                  // Big Buttonboard und Wecker
+#ifndef Wecker                                                      // Big Buttonboard ohne Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(702);                              // 702 Shortcut mit Matrix ohne Weckershortcut
+         else
+#endif
+#ifdef Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(703);                              // 703 Shortcut mit Matrix und Weckersound
+          else
+#endif
+#endif
+
 #ifndef EarPhone
-      if (messageOffset + returnValue == 912)                      // Tauschen der Startmessage ohne Kopfhörereinstellungen
-        mp3.playMp3FolderTrack(913);
+      if (messageOffset + returnValue == 912)                      //  Kopfhörereinstellungen
+        mp3.playMp3FolderTrack(913);                               // 913-Einstellungen für den Klang
       else
 #endif
-          mp3.playMp3FolderTrack(messageOffset + returnValue);
+          mp3.playMp3FolderTrack(messageOffset + returnValue);     // Ansage Rückgabewert OrdnerNr, TrackNr, oder Lautstärke
+
+//************ Vorschau *****************************
         if (preview)
         {
           waitForTrackToFinish();
@@ -3431,13 +3444,8 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
       mp3.pause();
 
-#ifndef Wecker
-      if (messageOffset + returnValue == 904)                   // Tauschen der Startmessage ohne Weckershortcut
-        mp3.playMp3FolderTrack(995);
-      else
-#endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);         // Vol-Wert
+      mp3.playMp3FolderTrack(messageOffset + returnValue);         // Vol-Wert
       waitForTrackToFinish();
 
       //************ Vorschau *****************************
@@ -3484,26 +3492,33 @@ uint8_t voiceMenu(int numberOfOptions,
 // ---------- Messages tauschen --------------------
 #ifndef Buttonboard                                                 // 3 und 5 Tastenversion
 #ifndef Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage ohne Weckershortcut
-          mp3.playMp3FolderTrack(700);
+        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(700);                              // 700 Den Shortcut für eine Taste oder den Startsound programmieren
         else
 #endif
 #endif
 
 #ifdef Buttonboard                                                  // Big Buttonboard und Wecker
-#ifdef Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
-          mp3.playMp3FolderTrack(703);
-          else
-#endif
 #ifndef Wecker                                                      // Big Buttonboard ohne Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix ohne Weckershortcut
-          mp3.playMp3FolderTrack(702);
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(702);                              // 702 Shortcut mit Matrix ohne Weckershortcut
          else
+#endif
+#ifdef Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(703);                              // 703 Shortcut mit Matrix und Weckersound
+          else
 #endif
 #endif
 
-          mp3.playMp3FolderTrack(messageOffset + returnValue);      // Volume-Wert
+#ifndef EarPhone
+      if (messageOffset + returnValue == 912)                      //  Kopfhörereinstellungen
+        mp3.playMp3FolderTrack(913);                               // 913-Einstellungen für den Klang
+      else
+#endif
+          mp3.playMp3FolderTrack(messageOffset + returnValue);     // Ansage Rückgabewert OrdnerNr, TrackNr, oder Lautstärke
+
+//************ Vorschau *****************************
         if (preview)
         {
           waitForTrackToFinish();
@@ -4672,7 +4687,7 @@ void setup()
 #ifdef AiO
   Serial.println(F("** TONUINO - AiO **"));
 #endif
-  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-12-11 **"));
+  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-12-13 **"));
   Serial.println();
 #ifndef AiO
   Serial.println(F("Based on TonUINO V.2.1"));
