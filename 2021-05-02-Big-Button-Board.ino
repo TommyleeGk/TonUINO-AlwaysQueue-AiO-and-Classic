@@ -14,7 +14,7 @@
 
       Version Thomas Lehnert
 
-      letzte Änderung 2021-12-11
+      letzte Änderung 2021-12-13
    
 
     - Über #define wird ausgewählt, ob die Software auf dem AiO - Board,
@@ -4687,7 +4687,7 @@ void setup()
 #ifdef AiO
   Serial.println(F("** TONUINO - AiO **"));
 #endif
-  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-12-11 **"));
+  Serial.println(F("** VERSION THOMAS LEHNERT ** 2021-12-13 **"));
   Serial.println();
 #ifndef AiO
   Serial.println(F("Based on TonUINO V.2.1"));
