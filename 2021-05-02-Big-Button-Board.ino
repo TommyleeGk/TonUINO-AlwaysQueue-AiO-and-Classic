@@ -3291,15 +3291,15 @@ uint8_t voiceMenu(int numberOfOptions,
     readButtons();
     mp3.loop();
 
-    if (ButtonOne.pressedFor(LONG_PRESS))         // Abbruch durch Taste
+    if (ButtonOne.pressedFor(LONG_PRESS))                   // Abbruch durch Taste
     {
 #ifdef Konsole
       Serial.println(F("man. Abbruch"));
 #endif
-      AbbrActive = true;                          // Abbruch ist aktiv
-      mp3.playMp3FolderTrack(802);                // 802 - "OK, ich habe den Vorgang abgebrochen."
+      AbbrActive = true;                                    // Abbruch ist aktiv
+      mp3.playMp3FolderTrack(802);                          // 802 - "OK, ich habe den Vorgang abgebrochen."
       waitForTrackToFinish();
-      ignoreButtonOne = true;                     // PauseTaste übergehen
+      ignoreButtonOne = true;                               // PauseTaste übergehen
       setstandbyTimer();
       //return defaultValue;
       return;
@@ -3308,7 +3308,7 @@ uint8_t voiceMenu(int numberOfOptions,
     {
       if (returnValue != 0)
       {
-        AdmTimeOut = millis();                     // Neustart TimeOut Timer
+        AdmTimeOut = millis();                              // Neustart TimeOut Timer
 #ifdef Konsole
         Serial.print(F("Auswahl "));
         Serial.print(returnValue);
@@ -3334,13 +3334,8 @@ uint8_t voiceMenu(int numberOfOptions,
       else Serial.println(messageOffset + returnValue);                 // wenn Lautstärkeeinstellung, Anzeige Rückgabewert + Offset
 #endif
       mp3.pause();
-#ifndef Wecker
-      if (messageOffset + returnValue == 904)                           // Tauschen der Startmessage ohne Weckershortcut
-        mp3.playMp3FolderTrack(995);
-      else
-#endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);             // Ansage Rückgabewert
+       mp3.playMp3FolderTrack(messageOffset + returnValue);             // Ansage Rückgabewert
       waitForTrackToFinish();
 
       //************ Vorschau *****************************
@@ -3375,19 +3370,37 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
         mp3.pause();
 
-// ------------- Messages tauschen --------------------------
+// ---------- Messages tauschen --------------------
+#ifndef Buttonboard                                                 // 3 und 5 Tastenversion
 #ifndef Wecker
-        if (messageOffset + returnValue == 904)                    // Tauschen der Startmessage ohne Weckershortcut
-          mp3.playMp3FolderTrack(995);
+        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(700);                              // 700 Den Shortcut für eine Taste oder den Startsound programmieren
         else
 #endif
+#endif
+
+#ifdef Buttonboard                                                  // Big Buttonboard und Wecker
+#ifndef Wecker                                                      // Big Buttonboard ohne Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(702);                              // 702 Shortcut mit Matrix ohne Weckershortcut
+         else
+#endif
+#ifdef Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(703);                              // 703 Shortcut mit Matrix und Weckersound
+          else
+#endif
+#endif
+
 #ifndef EarPhone
-      if (messageOffset + returnValue == 912)                      // Tauschen der Startmessage ohne Kopfhörereinstellungen
-        mp3.playMp3FolderTrack(913);
+      if (messageOffset + returnValue == 912)                      //  Kopfhörereinstellungen
+        mp3.playMp3FolderTrack(913);                               // 913-Einstellungen für den Klang
       else
 #endif
-          mp3.playMp3FolderTrack(messageOffset + returnValue);
-        if (preview)
+          mp3.playMp3FolderTrack(messageOffset + returnValue);     // Ansage Rückgabewert OrdnerNr, TrackNr, oder Lautstärke
+
+//************ Vorschau *****************************
+         if (preview)
         {
           waitForTrackToFinish();
           if (previewFromFolder == 0)
@@ -3431,13 +3444,8 @@ uint8_t voiceMenu(int numberOfOptions,
 #endif
       mp3.pause();
 
-#ifndef Wecker
-      if (messageOffset + returnValue == 904)                   // Tauschen der Startmessage ohne Weckershortcut
-        mp3.playMp3FolderTrack(995);
-      else
-#endif
 
-        mp3.playMp3FolderTrack(messageOffset + returnValue);         // Vol-Wert
+      mp3.playMp3FolderTrack(messageOffset + returnValue);         // Vol-Wert
       waitForTrackToFinish();
 
       //************ Vorschau *****************************
@@ -3484,26 +3492,33 @@ uint8_t voiceMenu(int numberOfOptions,
 // ---------- Messages tauschen --------------------
 #ifndef Buttonboard                                                 // 3 und 5 Tastenversion
 #ifndef Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage ohne Weckershortcut
-          mp3.playMp3FolderTrack(700);
+        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(700);                              // 700 Den Shortcut für eine Taste oder den Startsound programmieren
         else
 #endif
 #endif
 
 #ifdef Buttonboard                                                  // Big Buttonboard und Wecker
-#ifdef Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix und Weckershortcut
-          mp3.playMp3FolderTrack(703);
-          else
-#endif
 #ifndef Wecker                                                      // Big Buttonboard ohne Wecker
-        if (messageOffset + returnValue == 904)                     // Tauschen der Startmessage mit Matrix ohne Weckershortcut
-          mp3.playMp3FolderTrack(702);
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(702);                              // 702 Shortcut mit Matrix ohne Weckershortcut
          else
+#endif
+#ifdef Wecker
+        if (messageOffset + returnValue == 904)                     // Shortcuts mit Weckershortcut
+          mp3.playMp3FolderTrack(703);                              // 703 Shortcut mit Matrix und Weckersound
+          else
 #endif
 #endif
 
-          mp3.playMp3FolderTrack(messageOffset + returnValue);      // Volume-Wert
+#ifndef EarPhone
+      if (messageOffset + returnValue == 912)                      //  Kopfhörereinstellungen
+        mp3.playMp3FolderTrack(913);                               // 913-Einstellungen für den Klang
+      else
+#endif
+          mp3.playMp3FolderTrack(messageOffset + returnValue);     // Ansage Rückgabewert OrdnerNr, TrackNr, oder Lautstärke
+
+//************ Vorschau *****************************
         if (preview)
         {
           waitForTrackToFinish();
