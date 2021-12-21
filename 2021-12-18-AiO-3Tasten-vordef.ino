@@ -1746,8 +1746,9 @@ currentQueueIndex = (currentQueueIndex + Steps);            // Weiterspringen in
       Serial.println(currentQueueIndex);
       Serial.println(F("  Ende Queue "));   
  //#endif
+     bStop = true ;                                         // Stop am Ende der Queue
     }     
-     Steps = 1;                                             // Rücksetzen der Sprungweite auf 1 für Einzelschritt
+      Steps = 1;                                            // Rücksetzen der Sprungweite auf 1 für Einzelschritt
       break;
 
     case 3: //Party
