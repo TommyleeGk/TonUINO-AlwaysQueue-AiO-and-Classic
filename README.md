@@ -6,15 +6,18 @@ Der Funktionsumfang wurde erweitert und die Struktur des Adminmenüs
 verändert sowie um diverse Funktionen erweitert.
 Die Software ist so konzipiert, dass sie über defines an die vorhandene Hardware
 angepasst werden kann.
-Diese Software ist sowohl auf dem Klassischen Tonuino bestehend aus Einzelkmpoeneten
+Diese Software ist sowohl auf dem Klassischen Tonuino, bestehend aus Einzelkmpoeneten
 wie Arduino-Nano, DF-Player mini, RFID Reader MRF522 lauffähig,
 als auch auf der neuen AiO Platine.
 
-Für diese Version die in der zip datei enthaltenen Ordner advert und mp3 verwenden.
-Das ZipFile enthält den Code in verschiedenen Vorkonfigurationen über die Defines.
+Für alle Versionen die in der zip datei enthaltenen Ordner advert und mp3 verwenden.
 Der Code ist in allen Versionen dentisch und nur über die Defines an verschiedene 
 Hardwarekombinationen angepasst.
-
-Der in den zip files 2021-12-18.... enthaltene Code beinhaltet das letzte Update vom 18.12.2021.
-Die Alway Queue und die BigButtonboard Versionen sind vom Code identisch, nur unterschiedlich konfiguriert.
-Im Ordner SD-Karte sind die zugehörigen mp3 und advert Ordner enthalten.
+Über die Defines kann der Code an indiwiduelle Hardwarekonfigurationen angepasst werden.
+Die Nutzung der Option Jackdetekt auf der AiO Platine ist nur nach einer Hardwareänderung 
+möglich. 
+Die Optionen Wecker und Batteriecheck sind auf der AiO ebnfalls nur nach einer
+Hardwareänderung nutzbar.
+Im letzten Update vom 18.01.2022 wurden Programmabläufe optimiert und Variablenanpassungen
+vorgenommen, die zu diversen Warnungen beim Kompilieren geführt hatten.
+Dadurch wurde zusätzlicher Programmspeicher gewonnen.
