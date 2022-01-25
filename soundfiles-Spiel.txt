@@ -1,9 +1,9 @@
-﻿1.mp3|Der Würfel sagt 1. ;Gehe ein Feld weiter. 
-2.mp3|Der Würfel sagt 2. ;Gehe zwei Felder weiter. 
-3.mp3|Der Würfel sagt 3. ;Gehe drei Felder weiter. 
-4.mp3|Der Würfel sagt 4. ;Gehe 4 Felder weiter. 
-5.mp3|Der Würfel sagt 5. ;Gehe 5 Felderweiter. 
-6.mp3|Der Würfel sagt 6. ;Setze eine  neue Figur ein, oder gehe 6 Felder weiter.;Anschließend darfst du nocheinmal würfeln. 
+﻿1.mp3|Der Würfel sagt Eins. ;Gehe ein Feld weiter. 
+2.mp3|Der Würfel sagt Zwei. ;Gehe zwei Felder weiter. 
+3.mp3|Der Würfel sagt Drei. ;Gehe drei Felder weiter. 
+4.mp3|Der Würfel sagt Vier. ;Gehe vier Felder weiter. 
+5.mp3|Der Würfel sagt Fünf. ;Gehe fünf Felderweiter. 
+6.mp3|Der Würfel sagt Sechs. ;Setze eine  neue Figur ein, oder gehe sechs Felder weiter.;Anschließend darfst du noch einmal würfeln. 
 7.mp3|Du erhältst einen Bonuspunkt.;Schreibe ihn auf deinen Spielzettel. 
 8.mp3|Du erhältst 2 Bonuspunkte.;Schreibe sie auf deinen Spielzettel. 
 9.mp3|Du erhältst 3 Bonuspunkte.;Schreibe sie auf deinen Spielzettel. 
