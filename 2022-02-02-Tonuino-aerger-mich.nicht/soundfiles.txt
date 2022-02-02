@@ -1,0 +1,62 @@
+﻿1.mp3 |   Du hast eine Eins gewürfelt.   ;Du darfst ein Feld weiter gehen.                 
+2.mp3 |   Du hast eine Zwei gewürfelt.   ;Du darfst zwei Felder weiter gehen.                 
+3.mp3 |   Du hast eine Drei gewürfelt.   ;Du darfst drei Felder weiter gehen.                 
+4.mp3 |   Du hast eine Vier gewürfelt.   ;Du darfst vier Felder weiter gehen.                
+5.mp3 |   Du hast eine Fünf gewürfelt.   ;Du darfst fünf Felder weiter gehen.                
+6.mp3 |   Du hast eine Sechs gewürfelt.   ;Du darfst sechs Felder weiter gehen, oder eine neue Spielfigur einsetzen. Dann darfst du noch einmal würfeln.                
+7.mp3 |   Würfel, Würfel, eine Eins !   ;Springe ein Feld nach vorn.                 
+8.mp3 |   Würfel, Würfel, eine Zwei !   ;Springe zwei Felder nach vorn.                 
+9.mp3 |   Würfel, Würfel, eine Drei !   ;Springe drei Felder nach vorn.                 
+10.mp3 |   Würfel, Würfel, eine Vier !   ;Springe vier Felder nach vorn.                
+11.mp3 |   Würfel, Würfel, eine Fünf !   ;Springe fünf Felder nach vorn.                
+12.mp3 |   Hurra! Hurrah!, eine Sechs !   ;Springe sechs Felder nach vorn, oder setze eine neue Spielfigur ein. Dann darfst du noch einmal würfeln.                
+13.mp3 |   Der Würfel sagt Eins.   ;Gehe 1 Feld weiter.                 
+14.mp3 |   Der Würfel sagt Zwei.   ;Gehe 2 Felder weiter.                 
+15.mp3 |   Der Würfel sagt Drei.   ;Gehe 3 Felder weiter.                 
+16.mp3 |   Der Würfel sagt Vier.   ;Gehe 4 Felder weiter.                 
+17.mp3 |   Der Würfel sagt Fünf.   ;Gehe 5 Felder weiter.                 
+18.mp3 |   Der Würfel sagt Sechs.   ;Setze eine  neue Figur ein, oder gehe 6 Felder weiter.  ;Anschließend darfst du noch einmal würfeln.                 
+19.mp3 |   Du erhältst einen Bonuspunkt.  ;Schreibe ihn auf deinen Spielzettel.                 
+20.mp3 |   Du erhältst 2 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+21.mp3 |   Du erhältst 3 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+22.mp3 |   Du erhältst 4 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+23.mp3 |   Du erhältst 5 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+24.mp3 |   Du erhältst 6 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+25.mp3 |   Du erhältst 7 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+26.mp3 |   Du erhältst 8 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+27.mp3 |   Du erhältst 9 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+28.mp3 |   Du erhältst 10 Bonuspunkte.  ;Schreibe sie auf deinen Spielzettel.                 
+29.mp3 |   Du musst einen Bonuspunkt an deinen linken Nachbarn abgeben.  ;Streiche ihn auf deinem Spielzettel.                 
+30.mp3 |   Du musst 2 Bonuspunkte an deinen linken Nachbarn abgeben.  ;Streiche ihn auf deinem Spielzettel.                 
+31.mp3 |   Du musst einen Bonuspunkt an deinen rechten Nachbarn abgeben.  ;Streiche ihn auf deinem Spielzettel.                 
+32.mp3 |   Du musst 2 Bonuspunkte an deinen rechten Nachbarn abgeben.  ;Streiche ihn auf deinem Spielzettel.                 
+33.mp3 |   Schutzkarte!   ; Niemand darf deine Spielfiguren hinauswerfen bis du wieder an der Reihe bist.                 
+34.mp3 |   Und Tschüss!   ; Du hast leider Pech und deine Spielfigur muss das Spielfeld verlassen.                 
+35.mp3 |   Willkommen!    ;Du darfst eine neue Spielfigur auf das Spielfeld setzen.                
+36.mp3 |   Du darfst ein Feld weiter gehen.  ;             
+37.mp3 |   Du darfst 2 Felder weiter gehen.  ;             
+38.mp3 |   Du darfst 5 Felder weiter gehen.  ;             
+39.mp3 |   Pech gehabt!    ;Du musst leider ein Feld zurück gehen.    Triffst du eine neue Ereigniskarte ,kannst du aussuchen ob du sie ziehen willst.                
+40.mp3 |   Pech gehabt!   ; Du musst leider zwei Felder zurückgehen.    Triffst du eine neue Ereigniskarte ,kannst du aussuchen ob du sie ziehen willst.                
+41.mp3 |   Pech gehabt!   ; Du musst leider zehn Felder zurückgehen.    Triffst du eine neue Ereigniskarte ,kannst du aussuchen ob du sie ziehen willst.                
+42.mp3 |   Oh schade!    ;Du musst leider bis an den Anfang zurückgehen.                
+43.mp3 |   Super!    ;Deine Spielfigur darf bis ans Ende Vorrücken.    Als Belohnung erhältst du 10 zusätzliche Bonuspunkte.                
+44.mp3 |   Rachekarte!    ;Du darfst dir eine Spielfigur eines anderen Spielers aussuchen, die das Spielfeld verlassen muss.                
+45.mp3 |   Action!    ;Singe ein Lied vor.                
+46.mp3 |   Action!    ;Sage ein Gedicht auf.                
+47.mp3 |   Action!    ;Heule wie ein Wolf.                
+48.mp3 |   Action!    ;Quake wie ein Frosch.                
+49.mp3 |   Action!    ;Tanze auf einem Bein.                
+50.mp3 |   Action!    ;Mache einen Liegestütz.                
+51.mp3 |   Action!    ;Mache drei Hasensprünge.  ;             
+52.mp3 |   Mopskarte!    ;Du darfst dir von einem Mitspieler deiner  Wahl,einen Bonuspunkt mopsen.                 
+53.mp3 |   Helferkarte!    ;Du musst beim Tisch decken helfen.                 
+54.mp3 |   Helferkarte!    ;Du musst beim Abwasch helfen.                 
+55.mp3 |   Märchenkarte!   ;Mama, Pappa, Oma oder Opa müssen dir vor dem Schlafengehen ein Märchen oder eine Geschichte vorlesen.                
+56.mp3 |   Kuschelkarte!   ;Einmal Extrakuscheln ist jetzt angesagt.                 
+57.mp3 |   EXTRAWURF!    ;Du darfst ein mal zusätzlich würfeln.                 
+58.mp3 |   Pausekarte!    ;Du musst eine Runde aussetzen.                 
+59.mp3 |   Doppelkarte!    ;Wenn du möchtest, darfst du eine oder zwei weitere Ereigniskarten ziehen. Du kannst aber auch darauf verzichten.                
+60.mp3 |   Superbonus!    ;Deine Bonuspunkte werden verdoppelt.                
+61.mp3 |   Halbe Halbe!   ;Deine Bonuspunkte werden halbiert.    Bei einer ungeraden Zahl behältst du den größeren Teil.                
+62.mp3 |   VerschenkKarte!   ; Du darfst einem Mitspieler deiner Wahl Bonuspunkte schenken.                
