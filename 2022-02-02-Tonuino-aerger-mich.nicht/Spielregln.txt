@@ -18,15 +18,15 @@ Auf die SD-Karte des Tonuino muss der Ordner mit den Spielansagen kopiert werden
 
 Die RFID Karten werden wie folgend konfiguriert.
 
-	- 1 bis 4 Würfelkarten: Modus: Spezial Von-Bis Hörspiel, Tracks 001 bis 006.
+	- 1 bis 4 Würfelkarten: Modus: Spezial Von-Bis Hörspiel, Tracks 001 bis 018.
 
-	- Mehrere Ereigniskarten: Modus: Spezial Von-Bis Hörspiel, Tracks 007 bis 50,
+	- Mehrere Ereigniskarten: Modus: Spezial Von-Bis Hörspiel, Tracks 019 bis 62,
 	  Diese Ereigniskarten spielen ein per Zufall ausgewähltes Event aus allen Events ab. 
 oder
-	- Ereigniskarten : Modus Einzeltitel: Ein Track zwischen 007 und 50.
+	- Ereigniskarten : Modus Einzeltitel: Ein Track zwischen 019 und 62.
 	  Diesen Karten ist ein einzelnes Event fest zugeordnet.
 oder
-	- Ereigniskarten : Modus, Spezial Von-Bis Hörspiel, aufgesteilte Bereiche der Tracks 007 bis 050.
+	- Ereigniskarten : Modus, Spezial Von-Bis Hörspiel, aufgesteilte Bereiche der Tracks 019 bis 062.
 	  Diesen Karten sind nur Teilbereiche der Events zugeordnet, aus denen per Zufall ausgewählt wird.
 
 Die Ereigniskarten werden neutral und alle gleich gestaltet, so dass die Spieler nicht erkennen können, ob
