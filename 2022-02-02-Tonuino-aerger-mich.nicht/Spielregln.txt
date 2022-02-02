@@ -1,0 +1,59 @@
+Spielanleitung TonUINO ärger mich nicht.
+
+Für das Spiel wird ein Spielbrett benötigt, dass wie ein Mensch ärger dich nicht aufgebaut ist.
+Man kann auch ein original Mensch ärger dich nicht verwenden. Auf dem Spielfeld werden mit einem
+Farbstift oder Edding jedes zweite bis dritte Feld in unregelmäßigen Abständen ausgemalt.
+Die Anzahl der möglichen Spieler ist durch das Spielbrett bestimmt.
+Dazu brauchen wir 4 Spielfiguren pro Spieler die zur Unterscheidung farblich oder nach der Form
+unterschiedlich sein sollten.
+
+Pro Spieler wird noch ein Papp oder Plastikkärtchen benötigt, das der Farbe seiner Spielfiguren
+entspricht und als Schutzkarte dient.
+
+Weiterhin brauchen wir den Tonuino und einige RFID Karten oder Tags. Mit RFID Stickern beklebte 
+Holztäfelchen oder Würfel sind auch denkbar.
+
+Auf die SD-Karte des Tonuino muss der Ordner mit den Spielansagen kopiert werden. Dabei die 
+2 stellige Ordnernummer gemäß den Regeln für die TonUINO-SD-Karte festlegen.
+
+Die RFID Karten werden wie folgend konfiguriert.
+
+	- 1 bis 4 Würfelkarten: Modus: Spezial Von-Bis Hörspiel, Tracks 001 bis 006.
+
+	- Mehrere Ereigniskarten: Modus: Spezial Von-Bis Hörspiel, Tracks 007 bis 50,
+	  Diese Ereigniskarten spielen ein per Zufall ausgewähltes Event aus allen Events ab. 
+oder
+	- Ereigniskarten : Modus Einzeltitel: Ein Track zwischen 007 und 50.
+	  Diesen Karten ist ein einzelnes Event fest zugeordnet.
+oder
+	- Ereigniskarten : Modus, Spezial Von-Bis Hörspiel, aufgesteilte Bereiche der Tracks 007 bis 050.
+	  Diesen Karten sind nur Teilbereiche der Events zugeordnet, aus denen per Zufall ausgewählt wird.
+
+Die Ereigniskarten werden neutral und alle gleich gestaltet, so dass die Spieler nicht erkennen können, ob
+es sich um eine Vorteilskarte oder um eine Nachteilskarte handelt.
+
+Spielverlauf: 
+Jeder Spieler erhält eine Würfelkarte, oder bei nur einer Würfelkarte wird diese von Spieler zu Spieler
+weiter gereicht. Die Ereigniskarten kommen in die Mitte des Tisches.
+
+Es gelten die Spielregeln des normalen Mensch ärger dich nicht. Das würfeln erfolt durch Auflegen
+einer Würfelkarte.
+Zusätzlich kommen jetzt noch die Ereigniskarten ins Spiel. Jedesmal wenn ein Spieler auf eines
+der Farblich markierten Felder trifft muss er eine Ereigniskarte nehmen und auf den Tonuino auflegen.
+Es erfolgt eine Ansage, auf die der Spieler entsprechend reagieren muss. Durch Drücken der Play-Taste
+kann man die Ansage der zuletzt aufgelegten Karte noch einmal hören.
+Es gibt Vorteils-Events, wie das Erhalten von Bonuspunkten, Weiterspringen um weitere Felder, usw.
+Dann gibt es Nachteils-Events, wie den Verlust von Bonuspunkten, Zurückspringen um einige Felder usw.
+Besondere Events sind die Action-Events. Hier muss der Spieler aktiv etwas machen, wie ein Lied singen,
+Hüpfen oder anderes.
+Ein besonderes Event ist die Schutzkarte. Diese gilt für eine Runde, bis der Spieler wieder an der Reihe ist.
+Die Schutzkarte schützt den Spieler für eine Runde gegen Rauswerfen. Kein Spieler darf ihn in dieser Runde 
+Rauswerfen. Zum Kenntlichmachen, dass der Spieler unter Schutz steht, kann man für jeden Spieler eine farblich
+zu seinen Spielfiguren passende Pappkarte nehmen, die der Spieler im Schutzfall für alle sichtbar in die Mitte
+des Tisches legt und wenn die Runde herum ist, diese wieder wegnimmt. Wenn es ganz streng zugehen soll, kann
+die Schutzkarte eingezogen werden, wenn der Spieler es versäumt seine Karte weg zu nehmen nach dem die Runde
+herum ist. Er kann dann keinen Schutzstatus für die folgenden 2 Runden erlangen, auch wenn er eine Eventkarte 
+als Schutzkarte zieht.
+Der Spieler der zuerst alle seine Spielfiguren im Ziel hat ist der Gewinner. Erreichen mehrere Spieler 
+in der gleichen Runde mit allen Spielfiguren das Ziel, entscheiden die Bonuspunkte über den Sieg.
+Natürlich kann man sich auch noch weitere Regeln ausdenken, oder welche weglassen.
