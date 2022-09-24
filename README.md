@@ -1,3 +1,13 @@
+# 09-2022 Erweiterung für die Nutzung auf der AiO Plus.
+Der code wurde an die neue AiO Plus angepasst, und kann somit auch auf dieser 
+benutzt werden. Die Festlegung der Hardware-Plattform (Klassik, AiO, AiO Plus oder Nano Every)
+wird in den defines jetzt automatisch gesetzt. Dazu muss nur in der Werzeugleiste im
+Boardmanager das zur Hardware-Plattform passende Prozessor-Board ausgewählt werden und die zugehörigen Einstellungen
+vorgenommen werden. Die Boardabhängigen defines werden dadurch automatisch gesetzt.
+Die anderen Optionen ( 3, 5, Buttons;  Batterieüberwachung; LED Animation usw.) müssen 
+über die defines von Hand vorgenommen werden.
+
+
 # TonUINO-AlwaysQueue-AiO-and-Classic
 Diese Version der TonUINO software basiert auf der TonUINO Software von Thorsten Voss.
 Die Kernfunktionen entsprechen obiger Software, wodurch die Kompatibilität
