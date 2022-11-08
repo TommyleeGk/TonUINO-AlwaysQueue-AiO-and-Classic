@@ -1,3 +1,9 @@
+# 11-2022 Debugging von Jackdetekt für die AiO Plus.
+Im Code wurden noch bugs entdeckt. die bei Aktivierung von Jackdetekt den Lautsprecher dauerhaft stumm schalteten.
+Das wurde beseitigt und Jackdetekt kann uneingeschränkt genutzt werden.
+Außerdem wurde das Setzen der Defines übersichtlicher gestaltet, indem die Hardwareabhängigen Defines in eigene .h Dateien gelegt wurden.
+Diese sind durch Karteireiter in der Arduino IDE aufrufbar. Die config-xxx.h dateien müssen im gleichen Ordner gespeichert werden wie die XXX.ino Datei.
+
 # 09-2022 Erweiterung für die Nutzung auf der AiO Plus.
 Der code wurde an die neue AiO Plus angepasst, und kann somit auch auf dieser 
 benutzt werden. Die Festlegung der Hardware-Plattform (Klassik, AiO, AiO Plus oder Nano Every)
