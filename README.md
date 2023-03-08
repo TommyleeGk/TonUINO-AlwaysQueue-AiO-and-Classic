@@ -1,3 +1,12 @@
+# 03-2023 Zugriff auf die Sd-Karte über den USB-Port als Modifikation (nur AiO oder AiO plus)
+Die Funktion des Zugriffs auf die SD-Karte wurde als Modifikationskarte hinzugefügt. 
+Das Erstellen der zusätzlichen Modifikationskarte wurde ins Adminmenü integriert.
+Beim Auflegen der Modifikationskarte wird der Zugriff auf die interne SD-Karte des Tonuino aktiviert.
+Die Bedienung des Tonuino ist bei aktiver Modifikation gesperrt. Durch erneutes Auflegen der Karte
+oder Neustart des Tonuino wird der Zugriff auf die SD-Karte wieder gesperrt und die normale Funktion wieder hergestellt.
+Das Adminmenü kann jetzt durch die Tastenkombinationen Play-Laut-Leise, oder Play-Vor-Zurück aufgerufen werden.
+Dadurch hat der Zustand der Inversion der Tasten keine Auswirkung mehr auf den Start des Adminmenüs per Longpress 3 Tasten.
+
 # 11-2022 Debugging von Jackdetekt für die AiO Plus.
 Im Code wurden noch bugs entdeckt. die bei Aktivierung von Jackdetekt den Lautsprecher dauerhaft stumm schalteten.
 Das wurde beseitigt und Jackdetekt kann uneingeschränkt genutzt werden.
