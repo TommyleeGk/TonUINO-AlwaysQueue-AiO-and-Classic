@@ -1,3 +1,8 @@
+# 03-2024 Codeanpassung an die TLE-Traegerplatine
+der Code wurde an die von mir entwickelte TLE-Traegerplatine angepasst. Gleichzeitig wurde der Code auf die DF-Player Library Version 1.2.3 aktualisiert. Dabei wurde noch ein Bug beseitigt, der beim LKP-Player und der AiO Plus auftrat.
+In der Modifikation Schlummermodus wurde der Candlelight Effekt für die LED-Animation hinzugefügt. Dieser kann durch setzen des defines aktiviert werden und wird dann bei jedem Auflegen der Modifikationskarte Schlummermodus aktiv.
+Die TLE-Traegerplatine unterstützt auch die Verwendung von Batterien oder Akkus bis 12V. Die Batterieüberwachung ist im Code an die Batteriespannung anpassbar.
+
 # 03-2023 Zugriff auf die Sd-Karte über den USB-Port als Modifikation (nur AiO oder AiO plus)
 Die Funktion des Zugriffs auf die SD-Karte wurde als Modifikationskarte hinzugefügt. 
 Das Erstellen der zusätzlichen Modifikationskarte wurde ins Adminmenü integriert.
