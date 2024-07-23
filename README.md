@@ -1,3 +1,8 @@
+# 07-2024 Integration von Bluetooth auf der TLE-Traegerplatine
+Es wurde die Steuerung des KCX Bluetoothmodules für die Traegerplatine V3.0-BT in den Code integriert. Dies ist nur in der SW-Variante Every nutzbar. Für die Klassik-variante muss die Steurung über Hardware (Schalter, Taster) erfolgen.
+Die softwaremäßige Steuerung umfasst das Einschalten und das Pairing des BT-Modules mit Hilfe einer Modifikationskarte. Im Adminmenü wurde die Erzeugung einer BT-Karte integriert. Das Ausschalten erfolgt durch Longpress bei laufender Wiedergabe, zusätzlich zur Ansage der Tracknummer. Steuerung über Hardware(Schalter, Taster) ist parallel möglich.
+Die ergänzten mp3 und advert Files befinden sich mit im zip-Ordner.
+
 # 03-2024 Codeanpassung an die TLE-Traegerplatine
 der Code wurde an die von mir entwickelte TLE-Traegerplatine angepasst. Gleichzeitig wurde der Code auf die DF-Player Library Version 1.2.3 aktualisiert. Dabei wurde noch ein Bug beseitigt, der beim LKP-Player und der AiO Plus auftrat.
 In der Modifikation Schlummermodus wurde der Candlelight Effekt für die LED-Animation hinzugefügt. Dieser kann durch setzen des defines aktiviert werden und wird dann bei jedem Auflegen der Modifikationskarte Schlummermodus aktiv.
@@ -16,7 +21,7 @@ Dadurch hat der Zustand der Inversion der Tasten keine Auswirkung mehr auf den S
 Im Code wurden noch bugs entdeckt. die bei Aktivierung von Jackdetekt den Lautsprecher dauerhaft stumm schalteten.
 Das wurde beseitigt und Jackdetekt kann uneingeschränkt genutzt werden.
 Außerdem wurde das Setzen der Defines übersichtlicher gestaltet, indem die Hardwareabhängigen Defines in eigene .h Dateien gelegt wurden.
-Diese sind durch Karteireiter in der Arduino IDE aufrufbar. Die config-xxx.h dateien müssen im gleichen Ordner gespeichert werden wie die XXX.ino Datei.
+Diese sind durch Karteireiter in der Arduino IDE aufrufbar. Die config-x.xx.h dateien müssen im gleichen Ordner gespeichert werden wie die XXX.ino Datei.
 
 # 09-2022 Erweiterung für die Nutzung auf der AiO Plus.
 Der code wurde an die neue AiO Plus angepasst, und kann somit auch auf dieser 
