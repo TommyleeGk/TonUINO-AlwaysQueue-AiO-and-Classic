@@ -1,6 +1,6 @@
 # 07-2024 Integration von Bluetooth auf der TLE-Traegerplatine
 Es wurde die Steuerung des KCX Bluetoothmodules für die Traegerplatine V3.0-BT in den Code integriert. Dies ist nur in der SW-Variante Every nutzbar. Für die Klassik-variante muss die Steurung über Hardware (Schalter, Taster) erfolgen.
-Die softwaremäßige Steuerung umfasst das Einschalten und das Pairing des BT-Modules mit Hilfe einer Modifikationskarte. Im Adminmenü wurde die Erzeugung einer BT-Karte integriert. Das Ausschalten erfolgt durch Longpress bei laufender Wiedergabe, zusätzlich zur Ansage der Tracknummer. Steuerung über Hardware(Schalter, Taster) ist parallel möglich.
+Die softwaremäßige Steuerung umfasst das Einschalten und das Pairing des BT-Modules mit Hilfe einer Modifikationskarte. Im Adminmenü wurde die Erzeugung einer BT-Karte integriert. Das Ausschalten erfolgt durch Longpress der Play/Pausetaste bei laufender Wiedergabe, zusätzlich zur Ansage der Tracknummer. Steuerung über Hardware(Schalter, Taster) ist parallel möglich.
 Die ergänzten mp3 und advert Files befinden sich mit im zip-Ordner.
 
 # 03-2024 Codeanpassung an die TLE-Traegerplatine
