@@ -4,8 +4,7 @@
     ====================================================================================================
     - Zur Ansteuerung eines KCX Bluetoothmodules wurde die Steuerung über Modifikationskarte hinzugefügt.                        - Every 
       Beim ersten Auflegen der Modifikationskarte BlueTooth wird das Bluetoothmodul eingeschaltet.                                 auf TLE-Traegerplatine
-      Beim wiederholten Auflegen wird das Bluetoothmodul wieder ausgeschaltet. Eine aktive Modifikationskarte
-      wird durch das Auflegen der BT-Karte deaktiviert und muss ggf. neu aufgelegt werden.
+      Beim wiederholten Auflegen wird das Bluetoothmodul wieder ausgeschaltet. 
       Ein Pairing zu einem anderen Bluetoothgerät kann bei eingeschaltetem BT und laufender Wiedergabe 
       durch Longpress der Play/Pausetaste gestartet werden. Die Ansage der Tracknummer bleibt erhalten,
       das Pairing wird zusätzlich ausgeführt.
